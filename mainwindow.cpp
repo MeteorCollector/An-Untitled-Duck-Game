@@ -5,10 +5,34 @@
 #include <shooter.h>
 #include <summondummy.h>
 #include <transformbuilder.h>
+#include <physics.h>
+#include <usercontroller.h>
 
 #include "./ui_mainwindow.h"
 
+#include <QGraphicsEllipseItem> //trial
+
 void loadScene(GameScene *gameScene) {
+
+  auto obj = new GameObject();
+  auto transform = new Transform();
+  auto circle = new QGraphicsEllipseItem(transform);
+  circle->setRect(-5, -5, 64, 64);
+  transform->setPos(100, 100);
+  obj->addComponent(transform);
+  gameScene->attachGameObject(obj); //these are trials
+  auto pic = new GameObject();
+  ImageTransformBuilder()
+          .setPos(QPointF(300, 100))
+          .setImage(":/pr/images/test.png")
+          .setAlignment(Qt::AlignCenter)
+          .addToGameObject(pic);
+  transform->setPos(300, 100);
+  pic->addComponent(transform);
+  pic->addComponent(new Physics());
+  pic->addComponent(new UserController());
+  gameScene->attachGameObject(pic); //image trial
+
   auto shooter = new GameObject();
   ImageTransformBuilder()
       .setPos(QPointF(100, 100))

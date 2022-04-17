@@ -19,6 +19,7 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        res.qrc
 
         framework/gamescene.h framework/gamescene.cpp
         framework/gameobject.h framework/gameobject.cpp
@@ -27,6 +28,8 @@ set(PROJECT_SOURCES
         framework/imagetransform.h framework/imagetransform.cpp
         framework/transformbuilder.h framework/transformbuilder.cpp
 
+        physics.h physics.cpp
+        usercontroller.h usercontroller.cpp
         ammo.h ammo.cpp
         health.h health.cpp
         hitable.h hitable.cpp

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/pr">
+        <file>images/test.png</file>
+        <file>images/dm_run.png</file>
+    </qresource>
+</RCC>
