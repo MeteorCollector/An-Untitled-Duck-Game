@@ -51,4 +51,65 @@
         <file>images/p1.png</file>
         <file>images/p2.png</file>
     </qresource>
+    <qresource prefix="/item">
+        <file>images/b_1.gif</file>
+        <file>images/b_1.png</file>
+        <file>images/b_2.png</file>
+        <file>images/b_3.png</file>
+        <file>images/b_4.png</file>
+        <file>images/b_5.png</file>
+        <file>images/b_6.png</file>
+        <file>images/b_7.png</file>
+        <file>images/b_8.png</file>
+        <file>images/bomb_0.png</file>
+        <file>images/bomb_1.png</file>
+        <file>images/f_1.gif</file>
+        <file>images/f_1.png</file>
+        <file>images/f_2.png</file>
+        <file>images/f_3.png</file>
+        <file>images/f_4.png</file>
+        <file>images/f_5.png</file>
+        <file>images/f_6.png</file>
+        <file>images/f_7.png</file>
+        <file>images/f_8.png</file>
+        <file>images/sand.png</file>
+        <file>images/wall_b.png</file>
+        <file>images/wall_n.png</file>
+        <file>images/wall_r.png</file>
+    </qresource>
+    <qresource prefix="/robot">
+        <file>images/rbt_d_1.png</file>
+        <file>images/rbt_d_2.png</file>
+        <file>images/rbt_d_3.png</file>
+        <file>images/rbt_d_4.png</file>
+        <file>images/rbt_d_5.png</file>
+        <file>images/rbt_d_6.png</file>
+        <file>images/rbt_d_7.png</file>
+        <file>images/rbt_d_8.png</file>
+        <file>images/rbt_d_9.png</file>
+        <file>images/rbt_l_1.png</file>
+        <file>images/rbt_l_2.png</file>
+        <file>images/rbt_l_3.png</file>
+        <file>images/rbt_l_4.png</file>
+        <file>images/rbt_l_5.png</file>
+        <file>images/rbt_l_6.png</file>
+        <file>images/rbt_l_7.png</file>
+        <file>images/rbt_l_8.png</file>
+        <file>images/rbt_r_1.png</file>
+        <file>images/rbt_r_2.png</file>
+        <file>images/rbt_r_3.png</file>
+        <file>images/rbt_r_4.png</file>
+        <file>images/rbt_r_5.png</file>
+        <file>images/rbt_r_6.png</file>
+        <file>images/rbt_r_7.png</file>
+        <file>images/rbt_r_8.png</file>
+        <file>images/rbt_u_1.png</file>
+        <file>images/rbt_u_2.png</file>
+        <file>images/rbt_u_3.png</file>
+        <file>images/rbt_u_4.png</file>
+        <file>images/rbt_u_5.png</file>
+        <file>images/rbt_u_6.png</file>
+        <file>images/rbt_u_7.png</file>
+        <file>images/rbt_u_8.png</file>
+    </qresource>
 </RCC>

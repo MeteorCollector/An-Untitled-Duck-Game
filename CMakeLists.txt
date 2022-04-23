@@ -35,6 +35,7 @@ set(PROJECT_SOURCES
         hitable.h hitable.cpp
         shooter.h shooter.cpp
         goose.h goose.cpp
+        grid.h grid.cpp
         summondummy.h summondummy.cpp
 )
 

@@ -6,7 +6,7 @@
 #include "health.h"
 #include "hitable.h"
 
-class Transform;
+class Transform;// 绝对是这里的问题导致了崩溃
 
 class Goose : public Component {
  public:

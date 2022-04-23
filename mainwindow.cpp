@@ -7,8 +7,7 @@
 #include <transformbuilder.h>
 #include <physics.h>
 #include <usercontroller.h>
-#include <goose.h>
-
+#include <grid.h>
 #include <cstring>
 
 #include "./ui_mainwindow.h"
@@ -20,6 +19,10 @@
 
 GameObject* Player[2];
 int spawnpoint[4][2];// 初始化玩家和机器人的生成地点
+const int width = 64, height = 48;
+int map[15][20] = { 0 };
+GameObject* arr[15][20];
+GameObject* flr[15][20];// 背景
 
 void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
 {
@@ -40,13 +43,65 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
     spawnpoint[0][0] = 100, spawnpoint[0][1] = 100;
     spawnpoint[1][0] = 300, spawnpoint[1][1] = 100;
 
+    /* map init */
+    for(int i = 0;i < 20;i++)
+        map[0][i] = 1;
+    for(int i = 0;i < 20;i++)
+        map[14][i] = 1;
+    for(int i = 0;i < 15;i++)
+        map[i][0] = 1;
+    for(int i = 0;i < 15;i++)
+        map[i][19] = 1;
+    for(int i = 1;i <= 13;i++)
+        for(int j = 1;j <= 18;j++)
+        {
+            int k = rand() % 10;
+            if(k>=1 && k<=4)
+                map[i][j] = k;
+        }
+
+    for(int i = 0;i < 15;i++)// 铺地板
+        for(int j = 0;j < 20;j++)
+        {
+            flr[i][j] = new GameObject();
+            auto gridPos = new Transform();
+            gridPos->setPos(j * 64 + 92, i * 48 + 64);
+            ImageTransformBuilder()
+                  .setPos(QPointF(gridPos->pos().x(), gridPos->pos().y()))
+                  .setImage(":/item/images/sand.png")
+                  .setAlignment(Qt::AlignCenter)
+                  .addToGameObject(flr[i][j]);
+            gameScene->attachGameObject(flr[i][j]);
+        }
+
+    for(int i = 0;i < 15;i++)// 放石头
+        for(int j = 0;j < 20;j++)
+            if(map[i][j])
+            {
+            arr[i][j] = new GameObject();
+            auto grid = new Grid;
+            auto gridPos = new Transform();
+            grid->id = map[i][j];
+            gridPos->setPos(j * 64 + 92, i * 48 + 64);
+            ImageTransformBuilder()
+                  .setPos(QPointF(gridPos->pos().x(), gridPos->pos().y()))
+                  .setAlignment(Qt::AlignCenter)
+                  .addToGameObject(arr[i][j]);
+            arr[i][j]->addComponent(grid);
+            arr[i][j]->addComponent(gridPos);
+            gameScene->attachGameObject(arr[i][j]);
+            }
+
+
     auto obj = new GameObject();
     auto transform = new Transform();
+    /*
     auto circle = new QGraphicsEllipseItem(transform);
     circle->setRect(-5, -5, 64, 64);
     transform->setPos(100, 100);
     obj->addComponent(transform);
     gameScene->attachGameObject(obj); //these are trials
+    */
 
     /* initialize players */
     Player[0] = new GameObject();
