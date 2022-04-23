@@ -45,4 +45,10 @@
         <file>images/u_7.png</file>
         <file>images/u_8.png</file>
     </qresource>
+    <qresource prefix="/ui">
+        <file>images/e1.png</file>
+        <file>images/e2.png</file>
+        <file>images/p1.png</file>
+        <file>images/p2.png</file>
+    </qresource>
 </RCC>

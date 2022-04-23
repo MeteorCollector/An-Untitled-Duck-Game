@@ -28,13 +28,13 @@ set(PROJECT_SOURCES
         framework/imagetransform.h framework/imagetransform.cpp
         framework/transformbuilder.h framework/transformbuilder.cpp
 
-        player.h player.cpp
         physics.h physics.cpp
         usercontroller.h usercontroller.cpp
         ammo.h ammo.cpp
         health.h health.cpp
         hitable.h hitable.cpp
         shooter.h shooter.cpp
+        goose.h goose.cpp
         summondummy.h summondummy.cpp
 )
 

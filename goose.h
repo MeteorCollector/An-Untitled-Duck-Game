@@ -1,6 +1,7 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef GOOSE_H
+#define GOOSE_H
 
+#include <cstring>
 #include "component.h"
 #include "health.h"
 #include "hitable.h"
@@ -27,4 +28,4 @@ class Goose : public Component {
   float cooldown = interval;
 };
 
-#endif // PLAYER_H
+#endif // GOOSE_H

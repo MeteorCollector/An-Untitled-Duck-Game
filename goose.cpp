@@ -1,4 +1,5 @@
-#include "player.h"
+#include "goose.h"
+
 #include <gameobject.h>
 #include <transform.h>
 #include <transformbuilder.h>
@@ -12,19 +13,8 @@ Goose::Goose() : Component() {}
 void Goose::onAttach() {
   this->transform = this->gameObject->getComponent<Transform>();
   Q_ASSERT(this->transform != nullptr);
-  auto rect = new QGraphicsRectItem(this->transform);
-  rect->setRect(QRectF(-30, -30, 60, 60));
-
-  ImageTransformBuilder()
-        .setPos(QPointF(spawn_x, spawn_y))
-        .setImage(":/player/images/d_3.png")
-        .setAlignment(Qt::AlignCenter)
-        .addToGameObject(this->gameObject);
-  auto controller = new UserController();
-  controller->playerID = id;
-  this->gameObject->addComponent(new Physics());
-  this->gameObject->addComponent(controller);
-
+  //auto rect = new QGraphicsRectItem(this->transform);
+  //rect->setRect(QRectF(-30, -30, 60, 60));
 }
 
 void Goose::onUpdate(float deltaTime) {
