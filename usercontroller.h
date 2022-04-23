@@ -9,6 +9,7 @@ class UserController: public Component
 {
 public:
     UserController();
+    int playerID = 0;
 
     void onAttach() override;
     void onUpdate(float deltaTime) override;

@@ -2,5 +2,47 @@
     <qresource prefix="/pr">
         <file>images/test.png</file>
         <file>images/dm_run.png</file>
+        <file>audios/bgm_sor.mp3</file>
+        <file>audios/bgm_sor_wav.wav</file>
+        <file>images/pks.png</file>
+    </qresource>
+    <qresource prefix="/sprites">
+        <file>images/b_1.gif</file>
+        <file>images/f_1.gif</file>
+    </qresource>
+    <qresource prefix="/player">
+        <file>images/d_1.png</file>
+        <file>images/d_2.png</file>
+        <file>images/d_3.png</file>
+        <file>images/d_4.png</file>
+        <file>images/d_5.png</file>
+        <file>images/d_6.png</file>
+        <file>images/d_7.png</file>
+        <file>images/d_8.png</file>
+        <file>images/d_9.png</file>
+        <file>images/l_1.png</file>
+        <file>images/l_2.png</file>
+        <file>images/l_3.png</file>
+        <file>images/l_4.png</file>
+        <file>images/l_5.png</file>
+        <file>images/l_6.png</file>
+        <file>images/l_7.png</file>
+        <file>images/l_8.png</file>
+        <file>images/r_1.png</file>
+        <file>images/r_2.png</file>
+        <file>images/r_3.png</file>
+        <file>images/r_4.png</file>
+        <file>images/r_5.png</file>
+        <file>images/r_6.png</file>
+        <file>images/r_7.png</file>
+        <file>images/r_8.png</file>
+        <file>images/u_1.png</file>
+        <file>images/u_2.png</file>
+        <file>images/u_3.png</file>
+        <file>images/u_4.png</file>
+        <file>images/u_5.png</file>
+        <file>images/u_6.png</file>
+        <file>images/u_7.png</file>
+        <file>images/u_8.png</file>
     </qresource>
 </RCC>

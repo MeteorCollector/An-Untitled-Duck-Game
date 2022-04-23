@@ -11,8 +11,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Multimedia MultimediaWidgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Multimedia MultimediaWidgets REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -28,6 +28,7 @@ set(PROJECT_SOURCES
         framework/imagetransform.h framework/imagetransform.cpp
         framework/transformbuilder.h framework/transformbuilder.cpp
 
+        player.h player.cpp
         physics.h physics.cpp
         usercontroller.h usercontroller.cpp
         ammo.h ammo.cpp
@@ -61,7 +62,7 @@ else()
 endif()
 
 target_include_directories(QtGameFramework PRIVATE framework/)
-target_link_libraries(QtGameFramework PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(QtGameFramework PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::MultimediaWidgets)#modified
 
 set_target_properties(QtGameFramework PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
