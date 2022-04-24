@@ -9,6 +9,7 @@
 #include <usercontroller.h>
 #include <grid.h>
 #include <cstring>
+#include <mapmanager.h>
 
 #include "./ui_mainwindow.h"
 
@@ -16,13 +17,6 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QSoundEffect>
-
-GameObject* Player[2];
-int spawnpoint[4][2];// 初始化玩家和机器人的生成地点
-const int width = 64, height = 48;
-int map[15][20] = { 0 };
-GameObject* arr[15][20];
-GameObject* flr[15][20];// 背景
 
 void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
 {
@@ -34,31 +28,48 @@ void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
 }
 
 void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, GameScene *gameScene) {
+    GameObject* Player[2];
+    int spawnpoint[4][2];// 初始化玩家和机器人的生成地点
+    const int width = 64, height = 48;
+    int map[15][20] = { 0 };
+    GameObject* arr[15][20];
+    GameObject* flr[15][20];// 背景
+
     QSoundEffect effect;
     effect.setSource(QUrl::fromLocalFile(":/pr/audios/bgm_sor_wav.wav"));
     effect.setLoopCount(QSoundEffect::Infinite);
     effect.setVolume(40.0f);
     effect.play();// 失败的播放声音尝试，然而还是放在这里
 
-    spawnpoint[0][0] = 100, spawnpoint[0][1] = 100;
-    spawnpoint[1][0] = 300, spawnpoint[1][1] = 100;
+    spawnpoint[0][0] = 2, spawnpoint[0][1] = 13;
+    spawnpoint[1][0] = 17, spawnpoint[1][1] = 13;
 
     /* map init */
-    for(int i = 0;i < 20;i++)
+    for(int i = 0; i < 20; i++)
         map[0][i] = 1;
-    for(int i = 0;i < 20;i++)
+    for(int i = 0; i < 20; i++)
         map[14][i] = 1;
-    for(int i = 0;i < 15;i++)
+    for(int i = 0; i < 15; i++)
         map[i][0] = 1;
-    for(int i = 0;i < 15;i++)
+    for(int i = 0; i < 15; i++)
         map[i][19] = 1;
-    for(int i = 1;i <= 13;i++)
+    for(int i = 1; i <= 13; i++)
         for(int j = 1;j <= 18;j++)
         {
             int k = rand() % 10;
             if(k>=1 && k<=4)
                 map[i][j] = k;
         }
+    for(int t = 0; t <= 1; t++)// 确保玩家周围什么也没有
+        for(int i = spawnpoint[t][1] - 1; i <= spawnpoint[t][1]; i++)
+            for(int j = spawnpoint[t][0] - 1; j <= spawnpoint[t][0] + 1; j++)
+                map[i][j] = 0;
+
+    auto Manager = new Mapmanager();
+    for(int i = 0;i < 15;i++)// 铺地板
+        for(int j = 0;j < 20;j++)
+            Manager->tile[i][j] = map[i][j];// 将地图信息传入公共管理系统，以后也在这个管理系统中更新。
+
 
     for(int i = 0;i < 15;i++)// 铺地板
         for(int j = 0;j < 20;j++)
@@ -76,7 +87,7 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
 
     for(int i = 0;i < 15;i++)// 放石头
         for(int j = 0;j < 20;j++)
-            if(map[i][j])
+            //if(map[i][j])
             {
             arr[i][j] = new GameObject();
             auto grid = new Grid;
@@ -93,9 +104,9 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
             }
 
 
+    /*
     auto obj = new GameObject();
     auto transform = new Transform();
-    /*
     auto circle = new QGraphicsEllipseItem(transform);
     circle->setRect(-5, -5, 64, 64);
     transform->setPos(100, 100);
@@ -104,15 +115,17 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
     */
 
     /* initialize players */
+    auto transform = new Transform;
     Player[0] = new GameObject();
     ImageTransformBuilder()
-          .setPos(QPointF(spawnpoint[0][0], spawnpoint[0][1]))
+          .setPos(QPointF(64 * spawnpoint[0][0] + 92, 48 * spawnpoint[0][1] + 48))
           .setImage(":/player/images/d_3.png")
           .setAlignment(Qt::AlignCenter)
           .addToGameObject(Player[0]);
-    transform->setPos(300, 100);
+    transform->setPos(64 * spawnpoint[0][0] + 92, 48 * spawnpoint[0][1] + 48);
     auto controller1 = new UserController();
     controller1->playerID = 0;
+    controller1->map = Manager;
     Player[0]->addComponent(transform);
     Player[0]->addComponent(new Physics());
     Player[0]->addComponent(controller1);
@@ -120,17 +133,23 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
 
     Player[1] = new GameObject();
     ImageTransformBuilder()
-          .setPos(QPointF(spawnpoint[1][0], spawnpoint[1][1]))
+          .setPos(QPointF(64 * spawnpoint[1][0] + 92, 48 * spawnpoint[1][1] + 48))
           .setImage(":/player/images/d_3.png")
           .setAlignment(Qt::AlignCenter)
           .addToGameObject(Player[1]);
-    transform->setPos(300, 100);
+    transform->setPos(64 * spawnpoint[1][0] + 92, 48 * spawnpoint[1][1] + 48);
     auto controller2 = new UserController();
-    controller1->playerID = 1;
+    controller2->playerID = 1;
+    controller2->map = Manager;
     Player[1]->addComponent(transform);
     Player[1]->addComponent(new Physics());
     Player[1]->addComponent(controller2);
     gameScene->attachGameObject(Player[1]);
+
+    /* hooking */
+    Manager->player1 = Player[0];
+    Manager->player2 = Player[1];
+
     //auto text = new QGraphicsSimpleTextItem(transform);
     //text->setText("Player 1");
 
@@ -214,6 +233,7 @@ MainWindow::MainWindow(QWidget *parent)
     view->setFrameStyle(QFrame::NoFrame);
     view->resize(this->size());
     view->setSceneRect(QRect(0, 0, this->width(), this->height()));
+    view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
     QMediaPlayer* player = new QMediaPlayer;// added audio player
     QAudioOutput* audioOutput = new QAudioOutput;

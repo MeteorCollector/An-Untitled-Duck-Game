@@ -37,6 +37,7 @@ set(PROJECT_SOURCES
         goose.h goose.cpp
         grid.h grid.cpp
         summondummy.h summondummy.cpp
+        mapmanager.h mapmanager.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
