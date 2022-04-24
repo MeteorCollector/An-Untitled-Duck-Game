@@ -14,12 +14,12 @@ void UserController::onAttach() {
     trans = this->gameObject->getComponent<Transform>();
     assert(trans != nullptr);
     assert(map != nullptr);
-    auto circle = new QGraphicsEllipseItem(trans);
-    circle->setRect(QRectF(-22, 0, 44, 32));
-    this->collider = circle;
+    //auto circle = new QGraphicsEllipseItem(trans);
+    //circle->setRect(QRectF(-22, 0, 44, 32));
+    //this->collider = circle;
 
-    Rect = new QGraphicsRectItem(trans);
-    Rect->setRect(QRectF(-24, 4, 48, 20));
+    //Rect = new QGraphicsRectItem(trans);
+    //Rect->setRect(QRectF(-24, 4, 48, 20));
 
     label = new QGraphicsTextItem(trans);
     label->setPos(-40, -64);
@@ -57,8 +57,8 @@ void UserController::onUpdate(float deltaTime) {
     */
 
     int b = 4, h = 24, w = 16;
-    int i = (y - 64 + 0 + 24) / 48;
-    int j = (x - 92 + 0 + 32) / 64;
+    i = (y - 64 + 0 + 24) / 48;
+    j = (x - 92 + 0 + 32) / 64;
     int i1 = (y - 64 + 0 + 24) / 48;//y1
     int j1 = (x - 92 - w + 32) / 64;//x1
     int i2 = (y - 64 + 0 + 24) / 48;//y2
@@ -67,7 +67,7 @@ void UserController::onUpdate(float deltaTime) {
     int j3 = (x - 92 + 0 + 32) / 64;//x3
     int i4 = (y - 64 + h + 24) / 48;//y4
     int j4 = (x - 92 + 0 + 32) / 64;//x4
-    Rect->setRect(QRectF(- w, b, 2 * w, h - b));
+    //Rect->setRect(QRectF(- w, b, 2 * w, h - b));
 
     //u_en = i > 0 && !(map->tile[i - 1][j] && (y < 64 + 48 * i - 22));// classic
     //d_en = i < 14 && !(map->tile[i + 1][j] && (y > 64 + 48 * i - 18));
@@ -84,6 +84,9 @@ void UserController::onUpdate(float deltaTime) {
 
     if(playerID == 0)// 这里复制了太多，比较粪；但是暂时没找到存很多char*的方法
     {
+        if(getKeyDown(Qt::Key_Space)){
+            map->putBomb(i, j, 4, 3);
+        }
         if(getKey(Qt::Key_A) && l_en) {
             vx -= velocity;
             switch(x){
@@ -215,6 +218,9 @@ void UserController::onUpdate(float deltaTime) {
     }
     else if(playerID == 1)
     {
+        if(getKeyDown(Qt::Key_Return)){
+            map->putBomb(i, j, 4, 3);
+        }
         if(getKey(Qt::Key_J) && l_en) {
             vx -= velocity;
             switch(x){

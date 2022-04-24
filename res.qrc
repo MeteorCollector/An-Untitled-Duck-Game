@@ -76,6 +76,10 @@
         <file>images/wall_b.png</file>
         <file>images/wall_n.png</file>
         <file>images/wall_r.png</file>
+        <file>images/ex_1.png</file>
+        <file>images/ex_2.png</file>
+        <file>images/ex_3.png</file>
+        <file>images/ex4.png</file>
     </qresource>
     <qresource prefix="/robot">
         <file>images/rbt_d_1.png</file>

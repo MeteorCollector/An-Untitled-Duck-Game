@@ -20,6 +20,8 @@ public:
     void onUpdate(float deltaTime) override;
     //GameObject *label = nullptr;
 
+    int i, j;
+
 private:
     QGraphicsTextItem *label = nullptr;
     QGraphicsRectItem *Rect = nullptr;

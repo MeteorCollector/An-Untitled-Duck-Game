@@ -34,7 +34,8 @@ set(PROJECT_SOURCES
         health.h health.cpp
         hitable.h hitable.cpp
         shooter.h shooter.cpp
-        goose.h goose.cpp
+        bomb.h bomb.cpp
+        flame.h flame.cpp
         grid.h grid.cpp
         summondummy.h summondummy.cpp
         mapmanager.h mapmanager.cpp

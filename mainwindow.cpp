@@ -28,6 +28,10 @@ void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
 }
 
 void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, GameScene *gameScene) {
+
+    auto Manager = new Mapmanager();
+    Manager->gms = gameScene;
+
     GameObject* Player[2];
     int spawnpoint[4][2];// 初始化玩家和机器人的生成地点
     const int width = 64, height = 48;
@@ -65,7 +69,7 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
             for(int j = spawnpoint[t][0] - 1; j <= spawnpoint[t][0] + 1; j++)
                 map[i][j] = 0;
 
-    auto Manager = new Mapmanager();
+
     for(int i = 0;i < 15;i++)// 铺地板
         for(int j = 0;j < 20;j++)
             Manager->tile[i][j] = map[i][j];// 将地图信息传入公共管理系统，以后也在这个管理系统中更新。
