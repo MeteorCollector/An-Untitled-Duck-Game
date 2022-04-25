@@ -18,6 +18,7 @@ public:
 
     void onAttach() override;
     void onUpdate(float deltaTime) override;
+    void harm(int damage);
     //GameObject *label = nullptr;
 
     int i, j;
@@ -25,11 +26,13 @@ public:
 private:
     QGraphicsTextItem *label = nullptr;
     QGraphicsRectItem *Rect = nullptr;
+    QGraphicsRectItem *Bar = nullptr;
     bool u_en = true, d_en = true, l_en = true, r_en = true;
     Physics *physics = nullptr;
     ImageTransform *imgtrans = nullptr;
     QGraphicsItem *collider = nullptr;
     Transform *trans = nullptr;
+    int health = 10, totalhealth = 10;
     //ImageTransform *labeltrans = nullptr;
 
 };

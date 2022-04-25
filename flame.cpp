@@ -1,4 +1,6 @@
 #include "flame.h"
+#include "grid.h"
+#include <usercontroller.h>
 
 Flame::Flame(): Component() {}
 
@@ -16,6 +18,16 @@ void Flame::onUpdate(float deltaTime)
     if(stage == 0 && countdown < life * 3 / 4 && countdown > life / 2)
     {
         imgtrans->setImage(":/item/images/ex_2.png");
+        if(map->tile[i][j]){
+            auto grid = map->arr[i][j]->getComponent<Grid>();
+            grid->broken();
+            level = 0;
+            if(map->tile[i][j] > 1) { map->tile[i][j] = 0; }// 在这里更新地图状态，因为不想在grid里再挂manager了（躺）
+        }
+        auto pl1 = map->player1->getComponent<UserController>();
+        auto pl2 = map->player2->getComponent<UserController>();
+        if(pl1->i == i && pl1->j == j) { pl1->harm(4); }
+        if(pl2->i == i && pl2->j == j) { pl2->harm(4); }
         if(level > 0)
         {
             switch(dir)

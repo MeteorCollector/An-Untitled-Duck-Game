@@ -36,7 +36,7 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
     int spawnpoint[4][2];// 初始化玩家和机器人的生成地点
     const int width = 64, height = 48;
     int map[15][20] = { 0 };
-    GameObject* arr[15][20];
+
     GameObject* flr[15][20];// 背景
 
     QSoundEffect effect;
@@ -93,7 +93,7 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
         for(int j = 0;j < 20;j++)
             //if(map[i][j])
             {
-            arr[i][j] = new GameObject();
+            Manager->arr[i][j] = new GameObject();
             auto grid = new Grid;
             auto gridPos = new Transform();
             grid->id = map[i][j];
@@ -101,10 +101,10 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
             ImageTransformBuilder()
                   .setPos(QPointF(gridPos->pos().x(), gridPos->pos().y()))
                   .setAlignment(Qt::AlignCenter)
-                  .addToGameObject(arr[i][j]);
-            arr[i][j]->addComponent(grid);
-            arr[i][j]->addComponent(gridPos);
-            gameScene->attachGameObject(arr[i][j]);
+                  .addToGameObject(Manager->arr[i][j]);
+            Manager->arr[i][j]->addComponent(grid);
+            Manager->arr[i][j]->addComponent(gridPos);
+            gameScene->attachGameObject(Manager->arr[i][j]);
             }
 
 

@@ -10,6 +10,8 @@ public:
     GameScene* gms = nullptr;
 
     int tile[15][20];
+    GameObject* arr[15][20];
+
     GameObject* player1 = nullptr;
     GameObject* player2 = nullptr;
     GameObject* robot1 = nullptr;

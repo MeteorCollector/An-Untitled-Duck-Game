@@ -3,6 +3,7 @@
 #include <QGraphicsEllipseItem>
 #include <QGraphicsTextItem>
 #include <QFont>
+#include <QBrush>
 
 UserController::UserController() {}
 
@@ -18,11 +19,17 @@ void UserController::onAttach() {
     //circle->setRect(QRectF(-22, 0, 44, 32));
     //this->collider = circle;
 
-    //Rect = new QGraphicsRectItem(trans);
-    //Rect->setRect(QRectF(-24, 4, 48, 20));
+    // health bar
+    Rect = new QGraphicsRectItem(trans);
+    Rect->setRect(QRectF(- totalhealth * 3, -40, totalhealth * 6, 6));
+    Rect->setBrush(Qt::black);
+    Bar = new QGraphicsRectItem(trans);
+    Bar->setRect(QRectF(- totalhealth * 3, -40, health * 6, 6));
+    Bar->setBrush(Qt::red);
 
+    // label
     label = new QGraphicsTextItem(trans);
-    label->setPos(-40, -64);
+    label->setPos(-40, -70);
     if(playerID == 0)
     {
         label->setDefaultTextColor(QColor(0, 255, 0));
@@ -44,7 +51,14 @@ void UserController::onAttach() {
 
 }
 
+void UserController::harm(int damage)
+{
+    health = health - damage < 0 ? 0 : health - damage;
+    Bar->setRect(QRectF(- totalhealth * 3, -40, health * 6, 6));
+}
+
 void UserController::onUpdate(float deltaTime) {
+
 
     float vx = 0, vy = 0;
     int pace = 8;// 每pace步切换一次画面
