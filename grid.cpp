@@ -4,6 +4,7 @@
 #include <transformbuilder.h>
 #include <imagetransform.h>
 #include <QGraphicsRectItem>
+#include <stuff.h>
 
 Grid::Grid() : Component() {}
 
@@ -19,7 +20,22 @@ void Grid::onAttach() {
 }
 
 void Grid::broken()
-{
-    if(id >=2){ imgtrans->setImage(":/item/images/wall_r.png"); }
-    id = 0;
+{    
+    if(id >= 2){
+        imgtrans->setImage(":/item/images/wall_r.png");
+        if(id > 2)
+        {
+            int index = rand() % 4 + 1;
+            stf = map->putStuff(i, j, index);
+            map->tile[i][j] = - index;
+            id = -index;
+        }
+        else
+        {
+            map->tile[i][j] = 0;
+            id = 0;
+        }
+    }
+
+
 }

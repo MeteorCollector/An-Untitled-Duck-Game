@@ -36,9 +36,11 @@ set(PROJECT_SOURCES
         shooter.h shooter.cpp
         bomb.h bomb.cpp
         flame.h flame.cpp
+        stuff.h stuff.cpp
         grid.h grid.cpp
         summondummy.h summondummy.cpp
         mapmanager.h mapmanager.cpp
+        scenemanager.h scenemanager.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

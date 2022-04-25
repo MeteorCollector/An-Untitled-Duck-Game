@@ -22,6 +22,8 @@ class GameScene final : public QGraphicsScene {
   void detachGameObject(GameObject *gameObject);
   GameObject *getGameObject(const char *name);
 
+  void clearAll();// add
+
  private:
   QTimer *updateTimer = nullptr;
   QList<GameObject *> gameObjects;

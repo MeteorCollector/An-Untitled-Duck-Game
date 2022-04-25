@@ -22,6 +22,17 @@ GameScene::~GameScene() {
   }
 }
 
+void GameScene::clearAll()
+{
+    gameObjects.clear();
+    gameObjectsToAttach.clear();
+    gameObjectsToDetach.clear();
+    gameObjectsAttachedOnLastUpdate.clear();
+    //for (auto gameObject : gameObjects) {
+    //  destory(gameObject);
+    //}
+}
+
 void GameScene::attachGameObject(GameObject *gameObject) {
   gameObjectsToAttach.emplace_back(gameObject);
 }

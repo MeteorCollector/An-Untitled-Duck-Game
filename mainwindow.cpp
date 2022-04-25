@@ -27,10 +27,15 @@ void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
     return;
 }
 
-void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, GameScene *gameScene) {
+void MainWindow::loadScene(GameScene *gameScene, int index) {
 
-    auto Manager = new Mapmanager();
+    if(index == 1)
+    {
+        gameScene->clearAll();
+        auto Manager = new Mapmanager();
     Manager->gms = gameScene;
+    Manager->mainWD = this;
+    auto mng = new GameObject();
 
     GameObject* Player[2];
     int spawnpoint[4][2];// 初始化玩家和机器人的生成地点
@@ -39,11 +44,11 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
 
     GameObject* flr[15][20];// 背景
 
-    QSoundEffect effect;
-    effect.setSource(QUrl::fromLocalFile(":/pr/audios/bgm_sor_wav.wav"));
-    effect.setLoopCount(QSoundEffect::Infinite);
-    effect.setVolume(40.0f);
-    effect.play();// 失败的播放声音尝试，然而还是放在这里
+    //QSoundEffect effect;
+    //effect.setSource(QUrl::fromLocalFile(":/pr/audios/bgm_sor_wav.wav"));
+    //effect.setLoopCount(QSoundEffect::Infinite);
+    //effect.setVolume(40.0f);
+    //effect.play();// 失败的播放声音尝试，然而还是放在这里
 
     spawnpoint[0][0] = 2, spawnpoint[0][1] = 13;
     spawnpoint[1][0] = 17, spawnpoint[1][1] = 13;
@@ -96,7 +101,8 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
             Manager->arr[i][j] = new GameObject();
             auto grid = new Grid;
             auto gridPos = new Transform();
-            grid->id = map[i][j];
+            grid->id = map[i][j], grid->i = i, grid->j = j;
+            grid->map = Manager;
             gridPos->setPos(j * 64 + 92, i * 48 + 64);
             ImageTransformBuilder()
                   .setPos(QPointF(gridPos->pos().x(), gridPos->pos().y()))
@@ -153,6 +159,9 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
     /* hooking */
     Manager->player1 = Player[0];
     Manager->player2 = Player[1];
+
+    mng->addComponent(Manager);
+    gameScene->attachGameObject(mng);
 
     //auto text = new QGraphicsSimpleTextItem(transform);
     //text->setText("Player 1");
@@ -226,6 +235,7 @@ void loadScene(QMediaPlayer* player, QAudioOutput* audioOutput, float volume, Ga
     summonDummyBtn->addComponent(new SummonDummy);
      gameScene->attachGameObject(summonDummyBtn);
      */
+    }
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -239,11 +249,12 @@ MainWindow::MainWindow(QWidget *parent)
     view->setSceneRect(QRect(0, 0, this->width(), this->height()));
     view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
-    QMediaPlayer* player = new QMediaPlayer;// added audio player
-    QAudioOutput* audioOutput = new QAudioOutput;
-    player->setAudioOutput(audioOutput);
-    connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(positionChanged(qint64)));
-    loadScene(player, audioOutput, 50, gameScene);
+    //QMediaPlayer* player = new QMediaPlayer;// added audio player
+    //QAudioOutput* audioOutput = new QAudioOutput;
+    //player->setAudioOutput(audioOutput);
+    //connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(positionChanged(qint64)));
+
+    loadScene(gameScene, 1);
 }
 
 MainWindow::~MainWindow() { delete ui; }

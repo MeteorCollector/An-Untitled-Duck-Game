@@ -1,5 +1,7 @@
 #include "usercontroller.h"
 #include <transformbuilder.h>
+#include <grid.h>
+#include <bomb.h>
 #include <QGraphicsEllipseItem>
 #include <QGraphicsTextItem>
 #include <QFont>
@@ -49,12 +51,18 @@ void UserController::onAttach() {
     //labeltrans->setPos(trans->pos()+QPointF(0, -20));
     //auto label = new GameObject();
 
+    effect = new QSoundEffect();
+    effect->setVolume(100.0f);
+
 }
 
 void UserController::harm(int damage)
 {
     health = health - damage < 0 ? 0 : health - damage;
     Bar->setRect(QRectF(- totalhealth * 3, -40, health * 6, 6));
+    effect->stop();
+    effect->setSource(QUrl("qrc:/pr/audios/classic_hurt.wav"));
+    effect->play();
 }
 
 void UserController::onUpdate(float deltaTime) {
@@ -88,21 +96,35 @@ void UserController::onUpdate(float deltaTime) {
     //l_en = j > 0 && !(map->tile[i][j - 1] && (x < 92 + 64 * j - 10));
     //r_en = j < 19 && !(map->tile[i][j + 1] && (x > 92 + 64 * j + 10));
 
-    u_en = i > 0 && !((map->tile[i1 - 1][j1] || map->tile[i2 - 1][j2]) && (y < 64 + 48 * i - 22));
-    d_en = i < 14 && !((map->tile[i1 + 1][j1] || map->tile[i2 + 1][j2]) && (y > 64 + 48 * i - 18));
-    l_en = j > 0 && !((map->tile[i3][j3 - 1] || map->tile[i4][j4 - 1]) && (x < 92 + 64 * j - 10));
-    r_en = j < 19 && !((map->tile[i3][j3 + 1] || map->tile[i4][j4 + 1]) && (x > 92 + 64 * j + 10));
+    if(map->tile[i][j] < 0)// deal with buff
+    {
+        auto grd = map->arr[i][j]->getComponent<Grid>();
+        int index = - map->tile[i][j];
+        if(index == 1){ velocity = 200; }
+        else if(index == 2){ bombGrade = 4; }
+        else if(index == 3){ bombSum = 8; }
+        else if(index == 4){ bombMove = true; }
+        if(index >= 1){ effect->stop(); effect->setSource(QUrl("qrc:/pr/audios/levelup.wav")); effect->play(); }
+        destory(grd->stf);
+        map->tile[i][j] = 0;
+    }
+
+    u_en = i > 0 && !((map->tile[i1 - 1][j1] > 0 || map->tile[i2 - 1][j2] > 0) && (y < 64 + 48 * i - 20));
+    d_en = i < 14 && !((map->tile[i1 + 1][j1] > 0 || map->tile[i2 + 1][j2] > 0) && (y > 64 + 48 * i - 18));
+    l_en = j > 0 && !((map->tile[i3][j3 - 1] > 0 || map->tile[i4][j4 - 1] > 0) && (x < 92 + 64 * j - 10));
+    r_en = j < 19 && !((map->tile[i3][j3 + 1] > 0 || map->tile[i4][j4 + 1] > 0) && (x > 92 + 64 * j + 10));
     label->setPlainText("x = " + QString::number(j) + "  y = " + QString::number(i));
     x /= pace; x %= 8;
     y /= pace; y %= 8;
 
     if(playerID == 0)// 这里复制了太多，比较粪；但是暂时没找到存很多char*的方法
     {
-        if(getKeyDown(Qt::Key_Space)){
-            map->putBomb(i, j, 4, 3);
+        if(getKeyDown(Qt::Key_Space) && map->bombCnt[0] < bombSum){
+            map->putBomb(i, j, bombGrade, 3, 0);
         }
         if(getKey(Qt::Key_A) && l_en) {
             vx -= velocity;
+            if(bombMove && map->bmb[i][j] != nullptr) { auto b = map->bmb[i][j]->getComponent<Bomb>(); b->setMove(3); }
             switch(x){
             case 0:
                 imgtrans->setImage(":/player/images/l_1.png");
@@ -135,6 +157,7 @@ void UserController::onUpdate(float deltaTime) {
         }
         if(getKey(Qt::Key_D) && r_en) {
             vx += velocity;
+            if(bombMove && map->bmb[i][j] != nullptr) { auto b = map->bmb[i][j]->getComponent<Bomb>(); b->setMove(4); }
             switch(x){
             case 0:
                 imgtrans->setImage(":/player/images/r_1.png");
@@ -167,6 +190,7 @@ void UserController::onUpdate(float deltaTime) {
         }
         if(getKey(Qt::Key_W) && u_en) {
             vy -= velocity;
+            if(bombMove && map->bmb[i][j] != nullptr) { auto b = map->bmb[i][j]->getComponent<Bomb>(); b->setMove(1); }
             switch(y){
             case 0:
                 imgtrans->setImage(":/player/images/u_1.png");
@@ -199,6 +223,7 @@ void UserController::onUpdate(float deltaTime) {
         }
         if(getKey(Qt::Key_S) && d_en) {
             vy += velocity;
+            if(bombMove && map->bmb[i][j] != nullptr) { auto b = map->bmb[i][j]->getComponent<Bomb>(); b->setMove(2); }
             switch(y){
             case 0:
                 imgtrans->setImage(":/player/images/d_1.png");
@@ -232,11 +257,12 @@ void UserController::onUpdate(float deltaTime) {
     }
     else if(playerID == 1)
     {
-        if(getKeyDown(Qt::Key_Return)){
-            map->putBomb(i, j, 4, 3);
+        if(getKeyDown(Qt::Key_Return) && map->bombCnt[1] < bombSum){
+            map->putBomb(i, j, bombGrade, 3, 1);
         }
         if(getKey(Qt::Key_J) && l_en) {
             vx -= velocity;
+            if(bombMove && map->bmb[i][j] != nullptr) { auto b = map->bmb[i][j]->getComponent<Bomb>(); b->setMove(3); }
             switch(x){
             case 0:
                 imgtrans->setImage(":/player/images/l_1.png");
@@ -269,6 +295,7 @@ void UserController::onUpdate(float deltaTime) {
         }
         if(getKey(Qt::Key_L) && r_en) {
             vx += velocity;
+            if(bombMove && map->bmb[i][j] != nullptr) { auto b = map->bmb[i][j]->getComponent<Bomb>(); b->setMove(4); }
             switch(x){
             case 0:
                 imgtrans->setImage(":/player/images/r_1.png");
@@ -301,6 +328,7 @@ void UserController::onUpdate(float deltaTime) {
         }
         if(getKey(Qt::Key_I) && u_en) {
             vy -= velocity;
+            if(bombMove && map->bmb[i][j] != nullptr) { auto b = map->bmb[i][j]->getComponent<Bomb>(); b->setMove(1); }
             switch(y){
             case 0:
                 imgtrans->setImage(":/player/images/u_1.png");
@@ -333,6 +361,7 @@ void UserController::onUpdate(float deltaTime) {
         }
         if(getKey(Qt::Key_K) && d_en) {
             vy += velocity;
+            if(bombMove && map->bmb[i][j] != nullptr) { auto b = map->bmb[i][j]->getComponent<Bomb>(); b->setMove(2); }
             switch(y){
             case 0:
                 imgtrans->setImage(":/player/images/d_1.png");

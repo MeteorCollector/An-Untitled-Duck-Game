@@ -3,8 +3,15 @@
         <file>images/test.png</file>
         <file>images/dm_run.png</file>
         <file>audios/bgm_sor.mp3</file>
-        <file>audios/bgm_sor_wav.wav</file>
         <file>images/pks.png</file>
+        <file>audios/burp.wav</file>
+        <file>audios/classic_hurt.wav</file>
+        <file>audios/eat3.wav</file>
+        <file>audios/explode1.wav</file>
+        <file>audios/fuse.wav</file>
+        <file>audios/hurt2.wav</file>
+        <file>audios/levelup.wav</file>
+        <file>audios/orb.wav</file>
     </qresource>
     <qresource prefix="/sprites">
         <file>images/b_1.gif</file>
@@ -44,6 +51,7 @@
         <file>images/u_6.png</file>
         <file>images/u_7.png</file>
         <file>images/u_8.png</file>
+        <file>images/tomb.png</file>
     </qresource>
     <qresource prefix="/ui">
         <file>images/e1.png</file>
@@ -80,6 +88,18 @@
         <file>images/ex_2.png</file>
         <file>images/ex_3.png</file>
         <file>images/ex4.png</file>
+        <file>images/add_1.png</file>
+        <file>images/add_2.png</file>
+        <file>images/add_3.png</file>
+        <file>images/add_4.png</file>
+        <file>images/add_5.png</file>
+        <file>images/add_6.png</file>
+        <file>images/m_1.png</file>
+        <file>images/m_2.png</file>
+        <file>images/m_3.png</file>
+        <file>images/m_4.png</file>
+        <file>images/m_5.png</file>
+        <file>images/m_6.png</file>
     </qresource>
     <qresource prefix="/robot">
         <file>images/rbt_d_1.png</file>

@@ -16,6 +16,7 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
+  void loadScene(GameScene *gameScene, int index);
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 

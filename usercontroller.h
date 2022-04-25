@@ -7,13 +7,15 @@
 #include <imagetransform.h>
 #include <mapmanager.h>
 #include <QGraphicsTextItem>
+#include <QSoundEffect>
 
 class UserController: public Component
 {
 public:
     UserController();
-    int playerID = 0;
-    float velocity = 200;
+    int playerID = 0, bombGrade = 1, bombSum = 1;
+    bool bombMove = false;
+    float velocity = 100;
     Mapmanager *map = nullptr;
 
     void onAttach() override;
@@ -24,6 +26,7 @@ public:
     int i, j;
 
 private:
+    QSoundEffect *effect = nullptr;
     QGraphicsTextItem *label = nullptr;
     QGraphicsRectItem *Rect = nullptr;
     QGraphicsRectItem *Bar = nullptr;
