@@ -41,6 +41,7 @@ set(PROJECT_SOURCES
         summondummy.h summondummy.cpp
         mapmanager.h mapmanager.cpp
         scenemanager.h scenemanager.cpp
+        messagebox.h messagebox.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -1,6 +1,7 @@
 #ifndef USERCONTROLLER_H
 #define USERCONTROLLER_H
 
+#include <queue>
 #include <component.h>
 #include <gameobject.h>
 #include <physics.h>
@@ -26,8 +27,15 @@ public:
     int i, j;
 
 private:
+    void say(QString str);
+
+    std::queue<int> buff;
+    int buffcount[4] = { 0 };
+    QString bstr[3] = {" ", " ", " "};
+
     QSoundEffect *effect = nullptr;
     QGraphicsTextItem *label = nullptr;
+    QGraphicsTextItem *tag = nullptr;
     QGraphicsRectItem *Rect = nullptr;
     QGraphicsRectItem *Bar = nullptr;
     bool u_en = true, d_en = true, l_en = true, r_en = true;

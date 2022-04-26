@@ -13,7 +13,6 @@ public:
 
     QMediaPlayer* mplr = nullptr;
     QAudioOutput* audioOutput = nullptr;
-    QMediaPlaylist* plist = nullptr;
 
     GameScene* gms = nullptr;
     MainWindow* mainWD = nullptr;
