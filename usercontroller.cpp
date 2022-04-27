@@ -97,10 +97,8 @@ void UserController::die()
     auto p1 = map->player1->getComponent<UserController>();
     auto p2 = map->player2->getComponent<UserController>();
     map->mplr->stop();
-    auto mw = map->mainWD;
-    auto gs = map->gms;
     if(!p1->isAlive && !p2->isAlive)
-        return mw->loadScene(gs, 1);
+        return map->deathUI();
 }
 
 void UserController::onUpdate(float deltaTime) {

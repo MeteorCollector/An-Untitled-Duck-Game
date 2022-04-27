@@ -33,6 +33,16 @@ public:
     void onAttach() override;
     void load(int index);
 
+    void deathUI();
+    void victoryUI();
+
     int bombCnt[4] = { 0 };
+
+private:
+    int bgmid = 0;
+    float myTimer = 0.0f;
+    QGraphicsTextItem *label = nullptr;
+    QGraphicsRectItem *Rect = nullptr;
+    Transform *trans = nullptr;
 };
 #endif // MAPMANAGER_H

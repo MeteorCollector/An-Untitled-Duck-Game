@@ -169,81 +169,12 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
     Manager->player1 = Player[0];
     Manager->player2 = Player[1];
 
+    auto trans = new Transform();
+    trans->setPos(700, 400);// centered!
+    mng->addComponent(trans);
     mng->addComponent(Manager);
     gameScene->attachGameObject(mng);
 
-    //auto text = new QGraphicsSimpleTextItem(transform);
-    //text->setText("Player 1");
-
-    /* labeling */
-    //注意，标签一定在图层最上方，所以确保这段代码被最后执行
-
-    /*
-    int dy = -50;
-    ImageTransformBuilder()
-          .setPos(QPointF(spawnpoint[0][0], spawnpoint[0][1] + dy))
-          .setImage(":/ui/images/p1.png")
-          .setAlignment(Qt::AlignCenter)
-          .addToGameObject(Player[0]);
-    ImageTransformBuilder()
-          .setPos(QPointF(spawnpoint[1][0], spawnpoint[1][1] + dy))
-          .setImage(":/ui/images/p2.png")
-          .setAlignment(Qt::AlignCenter)
-          .addToGameObject(Player[1]);
-
-
-    //gameScene->attachGameObject(Player[1]);
-    */
-
-    /*
-    auto pic = new GameObject();
-    ImageTransformBuilder()
-          .setPos(QPointF(300, 100))
-          .setImage(":/player/images/d_3.png")
-          .setAlignment(Qt::AlignCenter)
-          .addToGameObject(pic);
-    transform->setPos(300, 100);
-    pic->addComponent(transform);
-    pic->addComponent(new Physics());
-    pic->addComponent(new UserController());
-    gameScene->attachGameObject(pic); //image trial
-    */
-
-
-    /*
-    auto goose1 = new GameObject();
-    auto proto = new Goose();
-    proto->id = 1; proto->spawn_x = 300; proto->spawn_y = 100;
-    transform->setPos(proto->spawn_x, proto->spawn_y);
-    goose1->addComponent(transform);
-    ImageTransformBuilder()
-          .setPos(QPointF(proto->spawn_x, proto->spawn_y))
-          .setImage(":/player/images/d_3.png")
-          .setAlignment(Qt::AlignCenter)
-          .addToGameObject(goose1);
-    auto controller = new UserController();
-    controller->playerID = proto->id;
-    goose1->addComponent(new Physics());
-    goose1->addComponent(controller);
-    goose1->addComponent(proto);
-    gameScene->attachGameObject(goose1);
-    */
-
-    /*
-    auto shooter = new GameObject();
-    ImageTransformBuilder()
-        .setPos(QPointF(100, 100))
-        .setImage("enemy_3_0.png")
-       .setAlignment(Qt::AlignCenter)
-       .addToGameObject(shooter);
-    shooter->addComponent(new Shooter);
-    gameScene->attachGameObject(shooter);
-
-    auto summonDummyBtn = new GameObject();
-     summonDummyBtn->addComponent(new Transform);
-    summonDummyBtn->addComponent(new SummonDummy);
-     gameScene->attachGameObject(summonDummyBtn);
-     */
     }
 }
 
