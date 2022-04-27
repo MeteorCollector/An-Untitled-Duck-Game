@@ -31,6 +31,7 @@ public:
     GameObject* putStuff(int i, int j, int index);
     void onUpdate(float deltaTime) override;
     void onAttach() override;
+    void load(int index);
 
     int bombCnt[4] = { 0 };
 };

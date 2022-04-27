@@ -80,16 +80,32 @@ void UserController::say(QString str)
 
 void UserController::harm(int damage)
 {
+    if(!isAlive) { return; }
     health = health - damage < 0 ? 0 : health - damage;
     Bar->setRect(QRectF(- totalhealth * 3, -40, health * 6, 6));
     effect->stop();
     effect->setSource(QUrl("qrc:/pr/audios/classic_hurt.wav"));
     effect->play();
     say("被炸到了！好疼啊...");
+    if(health <= 0){ return die(); }
+}
+
+void UserController::die()
+{
+    isAlive = false;
+    imgtrans->setImage(":/player/images/tomb.png");
+    auto p1 = map->player1->getComponent<UserController>();
+    auto p2 = map->player2->getComponent<UserController>();
+    map->mplr->stop();
+    auto mw = map->mainWD;
+    auto gs = map->gms;
+    if(!p1->isAlive && !p2->isAlive)
+        return mw->loadScene(gs, 1);
 }
 
 void UserController::onUpdate(float deltaTime) {
 
+    if(!isAlive){ return; }
 
     float vx = 0, vy = 0;
     int pace = 8;// 每pace步切换一次画面

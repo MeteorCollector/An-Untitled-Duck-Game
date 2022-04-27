@@ -24,13 +24,16 @@ GameScene::~GameScene() {
 
 void GameScene::clearAll()
 {
-    gameObjects.clear();
-    gameObjectsToAttach.clear();
-    gameObjectsToDetach.clear();
-    gameObjectsAttachedOnLastUpdate.clear();
-    //for (auto gameObject : gameObjects) {
-    //  destory(gameObject);
-    //}
+    //gameObjects.clear();
+    //gameObjectsToAttach.clear();
+    //gameObjectsToDetach.clear();
+    //gameObjectsAttachedOnLastUpdate.clear();
+    for (auto gameObject : gameObjectsToAttach) {
+      this->detachGameObject(gameObject);
+    }
+    for (auto gameObject : gameObjects) {
+      this->detachGameObject(gameObject);
+    }
 }
 
 void GameScene::attachGameObject(GameObject *gameObject) {

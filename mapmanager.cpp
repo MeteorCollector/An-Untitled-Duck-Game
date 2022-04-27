@@ -33,7 +33,7 @@ void Mapmanager::onUpdate(float deltaTime)
     if(getKeyUp(Qt::Key_R))
     {
         mplr->stop();
-        mainWD->loadScene(gms, 1);
+        return mainWD->loadScene(gms, 1);
     }
 }
 

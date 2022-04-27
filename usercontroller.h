@@ -15,13 +15,14 @@ class UserController: public Component
 public:
     UserController();
     int playerID = 0, bombGrade = 1, bombSum = 1;
-    bool bombMove = false;
+    bool bombMove = false; bool isAlive = true;
     float velocity = 100;
     Mapmanager *map = nullptr;
 
     void onAttach() override;
     void onUpdate(float deltaTime) override;
     void harm(int damage);
+    void die();
     //GameObject *label = nullptr;
 
     int i, j;

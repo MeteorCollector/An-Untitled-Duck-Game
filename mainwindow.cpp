@@ -29,7 +29,16 @@ void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
 
 void MainWindow::loadScene(GameScene *gameScene, int index) {
 
-    if(index == 1)
+    if(index == 2)// die scene
+    {
+        gameScene->clearAll();
+
+        //auto Manager = new Mapmanager();
+        //Manager->gms = gameScene;
+        //Manager->mainWD = this;
+    }
+
+    if(index == 1)// game
     {
         gameScene->clearAll();
         auto Manager = new Mapmanager();
