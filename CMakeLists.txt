@@ -42,6 +42,9 @@ set(PROJECT_SOURCES
         mapmanager.h mapmanager.cpp
         scenemanager.h scenemanager.cpp
         messagebox.h messagebox.cpp
+        button.h button.cpp
+        titlemanager.h titlemanager.cpp
+        wanderingduck.h wanderingduck.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -10,6 +10,9 @@
 #include <grid.h>
 #include <cstring>
 #include <mapmanager.h>
+#include <titlemanager.h>
+#include <wanderingduck.h>
+#include <button.h>
 
 #include "./ui_mainwindow.h"
 
@@ -17,6 +20,8 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QSoundEffect>
+#include <QLabel>
+#include <QMovie>
 
 void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
 {
@@ -29,13 +34,67 @@ void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
 
 void MainWindow::loadScene(GameScene *gameScene, int index) {
 
-    if(index == 2)// die scene
+    if(index == 0)// title scene
     {
         gameScene->clearAll();
+        auto Manager = new TitleManager();
+        auto mng = new GameObject();
+        Manager->gms = gameScene;
+        Manager->mainWD = this;
 
-        //auto Manager = new Mapmanager();
-        //Manager->gms = gameScene;
-        //Manager->mainWD = this;
+
+
+        auto trans = new Transform();
+        trans->setPos(700, 400);// centered!
+        mng->addComponent(trans);
+        mng->addComponent(Manager);
+        gameScene->attachGameObject(mng);
+
+        GameObject* duck[12];
+        for(int j = 0;j < 12;j++)
+        {
+            duck[j] = new GameObject();
+            auto duckPos = new Transform();
+            auto duc = new WanderingDuck();
+            duckPos->setPos(700 + 200 * cos(30 * j), 400 + 200 * sin(30 * j));
+            duck[j]->addComponent(duckPos);
+            duck[j]->addComponent(duc);
+            gameScene->attachGameObject(duck[j]);
+        }
+
+        /* button */
+        auto PVPbutton = new GameObject();
+        auto btn = new Button();
+        btn->index = 1; btn->mainWD = this; btn->gms = gameScene; btn->tmg = mng->getComponent<TitleManager>(); btn->str = " PVP 模式  ";
+        auto bttrans = new Transform(QPointF(700, 470));
+        PVPbutton->addComponent(bttrans);
+        PVPbutton->addComponent(btn);
+        gameScene->attachGameObject(PVPbutton);
+
+        auto PVEbutton = new GameObject();
+        auto btn2 = new Button();
+        btn2->index = 1; btn2->mainWD = this; btn2->gms = gameScene; btn2->tmg = mng->getComponent<TitleManager>(); btn2->str = " PVE 模式  ";
+        auto bttrans2 = new Transform(QPointF(1000, 470));
+        PVEbutton->addComponent(bttrans2);
+        PVEbutton->addComponent(btn2);
+        gameScene->attachGameObject(PVEbutton);
+
+        auto Tbutton = new GameObject();
+        auto Tbtn = new Button();
+        Tbtn->index = 1; Tbtn->mainWD = this; Tbtn->gms = gameScene; Tbtn->tmg = mng->getComponent<TitleManager>(); Tbtn->str = "     教程  ";
+        auto Tbttrans = new Transform(QPointF(400, 470));
+        Tbutton->addComponent(Tbttrans);
+        Tbutton->addComponent(Tbtn);
+        gameScene->attachGameObject(Tbutton);
+
+        auto Obutton = new GameObject();
+        auto Obtn = new Button();
+        Obtn->index = -1; Obtn->mainWD = this; Obtn->gms = gameScene; Obtn->tmg = mng->getComponent<TitleManager>(); Obtn->str = " 退出游戏  ";
+        auto Obttrans = new Transform(QPointF(700, 560));
+        Obutton->addComponent(Obttrans);
+        Obutton->addComponent(Obtn);
+        gameScene->attachGameObject(Obutton);
+
     }
 
     if(index == 1)// game
@@ -165,6 +224,15 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
     Player[1]->addComponent(controller2);
     gameScene->attachGameObject(Player[1]);
 
+    /* button */
+    auto Bbutton = new GameObject();
+    auto btnB = new Button();
+    btnB->index = 0; btnB->mainWD = this; btnB->gms = gameScene; btnB->map = Manager; btnB->str = "返回主菜单  ";
+    auto bttransB = new Transform(QPointF(192, 50));
+    Bbutton->addComponent(bttransB);
+    Bbutton->addComponent(btnB);
+    gameScene->attachGameObject(Bbutton);
+
     /* hooking */
     Manager->player1 = Player[0];
     Manager->player2 = Player[1];
@@ -194,7 +262,7 @@ MainWindow::MainWindow(QWidget *parent)
     //player->setAudioOutput(audioOutput);
     //connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(positionChanged(qint64)));
 
-    loadScene(gameScene, 1);
+    loadScene(gameScene, 0);
 }
 
 MainWindow::~MainWindow() { delete ui; }

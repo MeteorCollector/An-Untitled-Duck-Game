@@ -96,9 +96,11 @@ void UserController::die()
     imgtrans->setImage(":/player/images/tomb.png");
     auto p1 = map->player1->getComponent<UserController>();
     auto p2 = map->player2->getComponent<UserController>();
-    map->mplr->stop();
     if(!p1->isAlive && !p2->isAlive)
+    {
+        map->mplr->stop();
         return map->deathUI();
+    }
 }
 
 void UserController::onUpdate(float deltaTime) {
