@@ -13,6 +13,13 @@ UserController::UserController() {}
 
 
 void UserController::onAttach() {
+    if (playerID == 2 || playerID == 3)
+    {
+        pl1 = map->player1->getComponent<UserController>();
+        assert(pl1 != nullptr);
+        pl2 = map->player2->getComponent<UserController>();
+        assert(pl2 != nullptr);
+    }
     physics = this->gameObject->getComponent<Physics>();
     assert(physics != nullptr);
     imgtrans = this->gameObject->getComponent<ImageTransform>();
@@ -139,8 +146,8 @@ void UserController::die()
 
 void UserController::onUpdate(float deltaTime) {
 
+    myTimer += deltaTime;
     if(!isAlive){ return; }
-    if(moving && (playerID == 2 || playerID == 3)){ return; }
 
     float vx = 0, vy = 0;
     int pace = 8;// 每pace步切换一次画面
@@ -155,6 +162,9 @@ void UserController::onUpdate(float deltaTime) {
     int b = 4, h = 24, w = 16;
     i = (y - 64 + 0 + 24) / 48;
     j = (x - 92 + 0 + 32) / 64;
+
+    //if(moving && (playerID == 2 || playerID == 3)){ return; }// 这里myTimer可以设置setMove在机器人静止时的调用频率
+
     int i1 = (y - 64 + 0 + 24) / 48;//y1
     int j1 = (x - 92 - w + 32) / 64;//x1
     int i2 = (y - 64 + 0 + 24) / 48;//y2
@@ -199,9 +209,167 @@ void UserController::onUpdate(float deltaTime) {
     l_en = j > 0 && !((map->tile[i3][j3 - 1] > 0 || map->tile[i4][j4 - 1] > 0) && (x < 92 + 64 * j - 10));
     r_en = j < 19 && !((map->tile[i3][j3 + 1] > 0 || map->tile[i4][j4 + 1] > 0) && (x > 92 + 64 * j + 10));
 
-    //label->setPlainText("x = " + QString::number(j) + "  y = " + QString::number(i));
+    //label->setPlainText("target y = " + QString::number(targety) + "  y = " + QString::number(y));//
 
-    if (playerID == 2 || playerID == 3) return setMove(deltaTime, x, y, pace);
+    if (playerID == 2 || playerID == 3)
+    {
+        if (myTimer > loopTime)
+        {
+            myTimer = 0;
+            return map->putBomb(i, j, bombGrade, 3, playerID);
+        }
+        //qDebug("detecting movement of robot ", 1);//
+        if (moving == 0) return setMove(false);
+        if (moving > 0)
+        {
+            if(moving == 1)// 1 - up; 2 - down; 3 - left; 4 - right
+            {
+                if(y < targety){ trans->setPos(targetx, targety); moving = 0; }
+                vy -= velocity;
+                y /= pace; y %= 8;
+                switch(y){
+                case 0:
+                    imgtrans->setImage(":/robot/images/rbt_u_1.png");
+                    break;
+                case 1:
+                    imgtrans->setImage(":/robot/images/rbt_u_2.png");
+                    break;
+                case 2:
+                    imgtrans->setImage(":/robot/images/rbt_u_3.png");
+                    break;
+                case 3:
+                    imgtrans->setImage(":/robot/images/rbt_u_4.png");
+                    break;
+                case 4:
+                    imgtrans->setImage(":/robot/images/rbt_u_5.png");
+                    break;
+                case 5:
+                    imgtrans->setImage(":/robot/images/rbt_u_6.png");
+                    break;
+                case 6:
+                    imgtrans->setImage(":/robot/images/rbt_u_7.png");
+                    break;
+                case 7:
+                    imgtrans->setImage(":/robot/images/rbt_u_8.png");
+                    break;
+                default:
+                    imgtrans->setImage(":/robot/images/rbt_u_3.png");
+                    break;
+                }
+                trans->moveBy(0, - deltaTime * velocity);
+            }
+            else if(moving == 2)
+            {
+                if(y > targety){ trans->setPos(targetx, targety); moving = 0; }
+                y /= pace; y %= 8;
+                switch(y){
+                case 0:
+                    imgtrans->setImage(":/robot/images/rbt_d_1.png");
+                    break;
+                case 1:
+                    imgtrans->setImage(":/robot/images/rbt_d_2.png");
+                    break;
+                case 2:
+                    imgtrans->setImage(":/robot/images/rbt_d_3.png");
+                    break;
+                case 3:
+                    imgtrans->setImage(":/robot/images/rbt_d_4.png");
+                    break;
+                case 4:
+                    imgtrans->setImage(":/robot/images/rbt_d_5.png");
+                    break;
+                case 5:
+                    imgtrans->setImage(":/robot/images/rbt_d_6.png");
+                    break;
+                case 6:
+                    imgtrans->setImage(":/robot/images/rbt_d_7.png");
+                    break;
+                case 7:
+                    imgtrans->setImage(":/robot/images/rbt_d_8.png");
+                    break;
+                default:
+                    imgtrans->setImage(":/robot/images/rbt_d_3.png");
+                    break;
+                }
+                vy += velocity;
+                trans->moveBy(0, deltaTime * velocity);
+            }
+            else if(moving == 3)
+            {
+                if(x < targetx){ trans->setPos(targetx, targety); moving = 0; }
+                x /= pace; x %= 8;
+                switch(x){
+                case 0:
+                    imgtrans->setImage(":/robot/images/rbt_l_1.png");
+                    break;
+                case 1:
+                    imgtrans->setImage(":/robot/images/rbt_l_2.png");
+                    break;
+                case 2:
+                    imgtrans->setImage(":/robot/images/rbt_l_3.png");
+                    break;
+                case 3:
+                    imgtrans->setImage(":/robot/images/rbt_l_4.png");
+                    break;
+                case 4:
+                    imgtrans->setImage(":/robot/images/rbt_l_5.png");
+                    break;
+                case 5:
+                    imgtrans->setImage(":/robot/images/rbt_l_6.png");
+                    break;
+                case 6:
+                    imgtrans->setImage(":/robot/images/rbt_l_7.png");
+                    break;
+                case 7:
+                    imgtrans->setImage(":/robot/images/rbt_l_8.png");
+                    break;
+                default:
+                    imgtrans->setImage(":/robot/images/rbt_l_3.png");
+                    break;
+                }
+                vx -= velocity;
+                trans->moveBy(- deltaTime * velocity, 0);
+            }
+            else if(moving == 4)
+            {
+                if(x > targetx){ trans->setPos(targetx, targety); moving = 0; }
+                x /= pace; x %= 8;
+                switch(x){
+                case 0:
+                    imgtrans->setImage(":/robot/images/rbt_r_1.png");
+                    break;
+                case 1:
+                    imgtrans->setImage(":/robot/images/rbt_r_2.png");
+                    break;
+                case 2:
+                    imgtrans->setImage(":/robot/images/rbt_r_3.png");
+                    break;
+                case 3:
+                    imgtrans->setImage(":/robot/images/rbt_r_4.png");
+                    break;
+                case 4:
+                    imgtrans->setImage(":/robot/images/rbt_r_5.png");
+                    break;
+                case 5:
+                    imgtrans->setImage(":/robot/images/rbt_r_6.png");
+                    break;
+                case 6:
+                    imgtrans->setImage(":/robot/images/rbt_r_7.png");
+                    break;
+                case 7:
+                    imgtrans->setImage(":/robot/images/rbt_r_8.png");
+                    break;
+                default:
+                    imgtrans->setImage(":/robot/images/rbt_r_3.png");
+                    break;
+                }
+                vx += velocity;
+                trans->moveBy(deltaTime * velocity, 0);
+            }
+            //physics->setVelocity(vx, vy);
+        }
+        return;
+    }
 
     x /= pace; x %= 8;
     y /= pace; y %= 8;
@@ -495,54 +663,69 @@ void UserController::onUpdate(float deltaTime) {
     physics->setVelocity(vx, vy);
 }
 
-void UserController::setMove(float deltaTime, int x, int y, int pace)
+bool UserController::predict(int i, int j)
 {
-    /*
-    int newi = i + dy[dir], newj = j + dx[dir];
-    if(map->tile[newi][newj] <= 0)
-    {
-        targetx = 64 * (newj) + 92;
-        targety = 48 * (newi) + 64;
-        map->bmb[newi][newj] = map->bmb[i][j];
-        map->bmb[i][j] = nullptr;
-        i = newi, j = newj;
-        moving = dir;
-    }
-    */
-}
-
-void UserController::robotUpdate(float deltaTime, int targetx, int targety)
-{
-    if (playerID == 2 || playerID == 3)
-    {
-        if(moving > 0)
+    // false - dangerous; true - safe;
+    if (map->tile[i][j] > 0) return false;
+    int newi, newj;
+    for (int k = 0; k < 5; k ++)
+        if (1 <= j + dx[k] && j + dx[k] <= 20 && 1 <= i + dy[k] && i + dy[k] <= 15)
+            if (map->bmb[i + dy[k]][j + dx[k]] != nullptr) return false;
+    for (int k = 1; k < 5; k ++)
+        for (int d = 2; d <= 4; d ++)// 探测范围可以适量减少一些来减轻程序负担
         {
-            float x = trans->pos().x();
-            float y = trans->pos().y();
-            if(moving == 1)// 1 - up; 2 - down; 3 - left; 4 - right
+            newj = j + dx[k] * d; newi = i + dy[k] * d;
+            if (1 <= newj && newj <= 20 && 1 <= newi && newi <= 15 && map->bmb[newi][newj] != nullptr)
             {
-                if(y <= targety){ moving = 0; }
-                trans->moveBy(0, - deltaTime * velocity);
-                //setMove(1);
-            }
-            else if(moving == 2)
-            {
-                if(y >= targety){ moving = 0; }
-                trans->moveBy(0, deltaTime * velocity);
-                //setMove(2);
-            }
-            else if(moving == 3)
-            {
-                if(x <= targetx){ moving = 0; }
-                trans->moveBy(- deltaTime * velocity, 0);
-                //setMove(3);
-            }
-            else if(moving == 4)
-            {
-                if(x >= targetx){ moving = 0; }
-                trans->moveBy(deltaTime * velocity, 0);
-                //setMove(4);
+                auto bmbcomp = map->bmb[newi][newj]->getComponent<Bomb>();
+                if (bmbcomp->level >= 4) return false;
             }
         }
+    //qDebug("robot: (%d,  %d) is free to go", i, j);
+    return true;
+}
+
+void UserController::setMove(bool emergency)
+{
+    //qDebug("robot setMove");
+    float minDistance = 1145141919810.0f;// 在保证安全的前提下向玩家靠近
+    float distance;
+    int k = 0;
+    if (!predict(i, j)) emergency = true;
+    if (emergency)// 紧急情况：慌不择路
+    {
+        qDebug("emergency!");//
+        k = rand() % 4 + 1;
+        while(map->tile[i + dy[k]][j + dx[k]] > 0) { k ++; k %= 5; }
+        int newi = i + dy[k], newj = j + dx[k];
+        targetx = 64 * (newj) + 92;
+        targety = 48 * (newi) + 64 - 12;
+        moving = k;
+        return;
     }
+    if (predict(i - 1, j))
+    {
+        distance = std::min(sqrt(float((i - 1 - pl1->i)*(i - 1 - pl1->i)) + float((j - pl1->j)*(j - pl1->j))), sqrt(float((i - 1 - pl2->i)*(i - 1 - pl2->i)) + float((j - pl2->j)*(j - pl2->j))));
+        if (distance < minDistance) { minDistance = distance; k = 1; }
+    }
+    if (predict(i + 1, j))
+    {
+        distance = std::min(sqrt(float((i + 1 - pl1->i)*(i + 1 - pl1->i)) + float((j - pl1->j)*(j - pl1->j))), sqrt(float((i - 1 - pl2->i)*(i - 1 - pl2->i)) + float((j - pl2->j)*(j - pl2->j))));
+        if (distance < minDistance) { minDistance = distance; k = 2; }
+    }
+    if (predict(i, j - 1))
+    {
+        distance = std::min(sqrt(float((i - pl1->i)*(i - pl1->i)) + float((j - 1 - pl1->j)*(j - 1 - pl1->j))), sqrt(float((i - 1 - pl2->i)*(i - 1 - pl2->i)) + float((j - pl2->j)*(j - pl2->j))));
+        if (distance < minDistance) { minDistance = distance; k = 3; }
+    }
+    if (predict(i, j + 1))
+    {
+        distance = std::min(sqrt(float((i - pl1->i)*(i - pl1->i)) + float((j + 1 - pl1->j)*(j + 1 - pl1->j))), sqrt(float((i - 1 - pl2->i)*(i - 1 - pl2->i)) + float((j - pl2->j)*(j - pl2->j))));
+        if (distance < minDistance) { minDistance = distance; k = 4; }
+    }
+    int newi = i + dy[k], newj = j + dx[k];
+    targetx = 64 * (newj) + 92;
+    targety = 48 * (newi) + 64 - 12;
+    moving = k;
+    qDebug("robot %d setMove index to %d", playerID, k);
 }

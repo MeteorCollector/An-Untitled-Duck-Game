@@ -21,8 +21,9 @@ public:
 
     void onAttach() override;
     void onUpdate(float deltaTime) override;
-    void robotUpdate(float deltaTime, int targetx, int targety);
-    void setMove(float deltaTime, int x, int y, int pace);
+
+    void setMove(bool emergency = false);
+    bool predict(int i, int j);
     void harm(int damage);
     void die();
     //GameObject *label = nullptr;
@@ -50,10 +51,14 @@ private:
     //ImageTransform *labeltrans = nullptr;
 
     /* for AI */
+    float myTimer = 0;
     int dy[5] = { 0, -1, 1, 0, 0 };
     int dx[5] = { 0, 0, 0, -1, 1 };
-    bool moving = false;
-
+    int moving = 0;
+    UserController *pl1 = nullptr;
+    UserController *pl2 = nullptr;
+    int targetx = 0, targety = 0;
+    float loopTime = 4;
 };
 
 #endif // USERCONTROLLER_H

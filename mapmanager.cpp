@@ -43,6 +43,7 @@ void Mapmanager::onUpdate(float deltaTime)
         mplr->stop();
         //gms->clearAll();
         exitingEnabled = false;
+        qDebug("new scene loaded by R key", 1);
         return mainWD->loadScene(gms, pvpEnabled? 2 : 1);
     }
     if(myTimer > 130)

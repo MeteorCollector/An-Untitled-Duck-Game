@@ -36,9 +36,9 @@ void GameScene::clearAll()
     for (auto gameObject : gameObjects) {
       this->detachGameObject(gameObject);
     }
-    for (auto gameObject : gameObjectsAttachedOnLastUpdate){
-      this->detachGameObject(gameObject);
-    }
+    //for (auto gameObject : gameObjectsAttachedOnLastUpdate){
+    //  this->detachGameObject(gameObject);
+    //}
 
 
     //gameObjectsAttachedOnLastUpdate.clear();

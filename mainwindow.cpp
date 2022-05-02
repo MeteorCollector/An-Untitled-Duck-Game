@@ -35,6 +35,7 @@ void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
 
 void MainWindow::loadScene(GameScene *gameScene, int index) {
 
+    qDebug("loadscene,");
     if(index == 0)// title scene
     {
         //gameScene->clear();
