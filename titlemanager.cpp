@@ -50,6 +50,10 @@ void TitleManager::showPVEmenu()
 
 void TitleManager::onAttach()
 {
+    auto ptr = gms->getGameObject("mng");
+    assert(ptr == this->gameObject);
+    //if (ptr != this->gameObject) destory(this->gameObject);
+
     assert(gms != nullptr);
     trans = this->gameObject->getComponent<Transform>();
     mplr = new QMediaPlayer();
@@ -58,6 +62,8 @@ void TitleManager::onAttach()
     audioOutput->setVolume(0.5f);
     mplr->setAudioOutput(audioOutput);
     mplr->play();
+
+
 
     /* make title screen */
 

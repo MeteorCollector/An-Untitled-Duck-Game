@@ -25,6 +25,7 @@ private:
     //ImageTransform *imgtrans = nullptr;
     QGraphicsTextItem *tag = nullptr;
     QGraphicsRectItem *Rect = nullptr;
+    bool enabled = true;
 
     void generate(int index);
 };

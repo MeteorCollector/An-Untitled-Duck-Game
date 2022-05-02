@@ -52,7 +52,7 @@ void Bomb::onUpdate(float deltaTime)
     {
         float x = trans->pos().x();
         float y = trans->pos().y();
-        if(moving == 1)
+        if(moving == 1)// 1 - up; 2 - down; 3 - left; 4 - right
         {
             if(y <= targety){ moving = 0; }
             trans->moveBy(0, - deltaTime * velocity);

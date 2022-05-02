@@ -10,6 +10,8 @@
 
 UserController::UserController() {}
 
+
+
 void UserController::onAttach() {
     physics = this->gameObject->getComponent<Physics>();
     assert(physics != nullptr);
@@ -52,6 +54,16 @@ void UserController::onAttach() {
         label->setDefaultTextColor(QColor(0, 0, 255));
         label->setPlainText("Player 2");
     }
+    else if(playerID == 2)
+    {
+        label->setDefaultTextColor(QColor(255, 0, 0));
+        label->setPlainText("Robot  1");
+    }
+    else if(playerID == 3)
+    {
+        label->setDefaultTextColor(QColor(255, 0, 0));
+        label->setPlainText("Robot  2");
+    }
     auto font = new QFont();
     font->setPixelSize(20);
     font->setBold(true);
@@ -84,7 +96,8 @@ void UserController::harm(int damage)
     health = health - damage < 0 ? 0 : health - damage;
     Bar->setRect(QRectF(- totalhealth * 3, -40, health * 6, 6));
     effect->stop();
-    effect->setSource(QUrl("qrc:/pr/audios/classic_hurt.wav"));
+    if (playerID == 0 || playerID == 1) effect->setSource(QUrl("qrc:/pr/audios/classic_hurt.wav"));
+    if (playerID == 2 || playerID == 3) effect->setSource(QUrl("qrc:/pr/audios/hurt2.wav"));
     effect->play();
     say("被炸到了！好疼啊...");
     if(health <= 0){ return die(); }
@@ -92,20 +105,42 @@ void UserController::harm(int damage)
 
 void UserController::die()
 {
+    physics->setVelocity(0, 0);// 停止！
     isAlive = false;
     imgtrans->setImage(":/player/images/tomb.png");
     auto p1 = map->player1->getComponent<UserController>();
     auto p2 = map->player2->getComponent<UserController>();
-    if(!p1->isAlive && !p2->isAlive)
+    if(!map->pvpEnabled)
+    {
+        auto r1 = map->robot1->getComponent<UserController>();
+        auto r2 = map->robot2->getComponent<UserController>();
+        if(!r1->isAlive && !r2->isAlive)
+        {
+            map->mplr->stop();
+            return map->victoryUI();
+        }
+    }
+    if(!p1->isAlive && !p2->isAlive && (!map->pvpEnabled))
     {
         map->mplr->stop();
         return map->deathUI();
+    }
+    if(p1->isAlive && !p2->isAlive)
+    {
+        map->mplr->stop();
+        return map->pvpEndUI("Player 1");
+    }
+    if(!p1->isAlive && p2->isAlive)
+    {
+        map->mplr->stop();
+        return map->pvpEndUI("Player 2");
     }
 }
 
 void UserController::onUpdate(float deltaTime) {
 
     if(!isAlive){ return; }
+    if(moving && (playerID == 2 || playerID == 3)){ return; }
 
     float vx = 0, vy = 0;
     int pace = 8;// 每pace步切换一次画面
@@ -165,6 +200,8 @@ void UserController::onUpdate(float deltaTime) {
     r_en = j < 19 && !((map->tile[i3][j3 + 1] > 0 || map->tile[i4][j4 + 1] > 0) && (x > 92 + 64 * j + 10));
 
     //label->setPlainText("x = " + QString::number(j) + "  y = " + QString::number(i));
+
+    if (playerID == 2 || playerID == 3) return setMove(deltaTime, x, y, pace);
 
     x /= pace; x %= 8;
     y /= pace; y %= 8;
@@ -456,4 +493,56 @@ void UserController::onUpdate(float deltaTime) {
         }
     }
     physics->setVelocity(vx, vy);
+}
+
+void UserController::setMove(float deltaTime, int x, int y, int pace)
+{
+    /*
+    int newi = i + dy[dir], newj = j + dx[dir];
+    if(map->tile[newi][newj] <= 0)
+    {
+        targetx = 64 * (newj) + 92;
+        targety = 48 * (newi) + 64;
+        map->bmb[newi][newj] = map->bmb[i][j];
+        map->bmb[i][j] = nullptr;
+        i = newi, j = newj;
+        moving = dir;
+    }
+    */
+}
+
+void UserController::robotUpdate(float deltaTime, int targetx, int targety)
+{
+    if (playerID == 2 || playerID == 3)
+    {
+        if(moving > 0)
+        {
+            float x = trans->pos().x();
+            float y = trans->pos().y();
+            if(moving == 1)// 1 - up; 2 - down; 3 - left; 4 - right
+            {
+                if(y <= targety){ moving = 0; }
+                trans->moveBy(0, - deltaTime * velocity);
+                //setMove(1);
+            }
+            else if(moving == 2)
+            {
+                if(y >= targety){ moving = 0; }
+                trans->moveBy(0, deltaTime * velocity);
+                //setMove(2);
+            }
+            else if(moving == 3)
+            {
+                if(x <= targetx){ moving = 0; }
+                trans->moveBy(- deltaTime * velocity, 0);
+                //setMove(3);
+            }
+            else if(moving == 4)
+            {
+                if(x >= targetx){ moving = 0; }
+                trans->moveBy(deltaTime * velocity, 0);
+                //setMove(4);
+            }
+        }
+    }
 }

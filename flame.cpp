@@ -26,6 +26,13 @@ void Flame::onUpdate(float deltaTime)
         }
         auto pl1 = map->player1->getComponent<UserController>();
         auto pl2 = map->player2->getComponent<UserController>();
+        if(!map->pvpEnabled)
+        {
+            auto r1 = map->robot1->getComponent<UserController>();
+            auto r2 = map->robot2->getComponent<UserController>();
+            if(r1->i == i && r1->j == j) { r1->harm(4); }
+            if(r2->i == i && r2->j == j) { r2->harm(4); }
+        }
         if(pl1->i == i && pl1->j == j) { pl1->harm(4); }
         if(pl2->i == i && pl2->j == j) { pl2->harm(4); }
         if(level > 0)

@@ -28,12 +28,29 @@ void GameScene::clearAll()
     //gameObjectsToAttach.clear();
     //gameObjectsToDetach.clear();
     //gameObjectsAttachedOnLastUpdate.clear();
+
+
     for (auto gameObject : gameObjectsToAttach) {
       this->detachGameObject(gameObject);
     }
     for (auto gameObject : gameObjects) {
       this->detachGameObject(gameObject);
     }
+    for (auto gameObject : gameObjectsAttachedOnLastUpdate){
+      this->detachGameObject(gameObject);
+    }
+
+
+    //gameObjectsAttachedOnLastUpdate.clear();
+    //assert(false);
+    //for (auto gameObject : gameObjectsToDetach) {
+    //  gameObject->onDetach();
+    //  gameObject->setParentGameScene(nullptr);
+    //  this->gameObjects.removeAll(gameObject);
+    //  auto tf = gameObject->getComponent<Transform>();
+    //  if (tf != nullptr) this->removeItem(tf);
+    //}
+    //gameObjectsToDetach.clear();
 }
 
 void GameScene::attachGameObject(GameObject *gameObject) {

@@ -21,6 +21,8 @@ public:
 
     void onAttach() override;
     void onUpdate(float deltaTime) override;
+    void robotUpdate(float deltaTime, int targetx, int targety);
+    void setMove(float deltaTime, int x, int y, int pace);
     void harm(int damage);
     void die();
     //GameObject *label = nullptr;
@@ -46,6 +48,11 @@ private:
     Transform *trans = nullptr;
     int health = 10, totalhealth = 10;
     //ImageTransform *labeltrans = nullptr;
+
+    /* for AI */
+    int dy[5] = { 0, -1, 1, 0, 0 };
+    int dx[5] = { 0, 0, 0, -1, 1 };
+    bool moving = false;
 
 };
 

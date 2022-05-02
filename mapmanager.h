@@ -35,10 +35,13 @@ public:
 
     void deathUI();
     void victoryUI();
+    void pvpEndUI(QString winner);
+    bool pvpEnabled = false;
 
     int bombCnt[4] = { 0 };
 
 private:
+    bool exitingEnabled = true;
     int bgmid = 0;
     float myTimer = 0.0f;
     QGraphicsTextItem *label = nullptr;

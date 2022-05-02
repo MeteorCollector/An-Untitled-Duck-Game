@@ -16,6 +16,10 @@ Mapmanager::Mapmanager(): Component() {}
 
 void Mapmanager::onAttach()
 {
+    auto ptr = gms->getGameObject("mng");
+    assert(ptr == this->gameObject);
+    //if (ptr != this->gameObject) destory(this->gameObject);
+
     for(int i = 0;i < 15;i++)
         for(int j = 0;j < 20;j++)
             bmb[i][j] = nullptr;
@@ -31,12 +35,15 @@ void Mapmanager::onAttach()
 
 void Mapmanager::onUpdate(float deltaTime)
 {
+    if (!exitingEnabled) return;
     myTimer += deltaTime;
-    if(getKeyUp(Qt::Key_V)) victoryUI();// 调试功能，注意删除！
+    //if(getKeyUp(Qt::Key_V)) victoryUI();// 调试功能，注意删除！
     if(getKeyUp(Qt::Key_R))
     {
         mplr->stop();
-        return mainWD->loadScene(gms, 1);
+        //gms->clearAll();
+        exitingEnabled = false;
+        return mainWD->loadScene(gms, pvpEnabled? 2 : 1);
     }
     if(myTimer > 130)
     {
@@ -101,6 +108,37 @@ GameObject* Mapmanager::putStuff(int i, int j, int index)
     obj->addComponent(trans);
     gms->attachGameObject(obj);
     return obj;
+}
+
+void Mapmanager::pvpEndUI(QString winner)
+{
+    if (!pvpEnabled) return;
+    bgmid = 1;
+    mplr->stop();
+    mplr->setSource(QUrl("qrc:/pr/audios/fgo_battle_finish.mp3"));
+    audioOutput->setVolume(0.9f);
+    mplr->play();
+    Rect = new QGraphicsRectItem(trans);
+    Rect->setRect(QRectF(-640, -366, 1280, 736));
+    Rect->setBrush(QColor(0,0,0,200));
+    auto inRect = new QGraphicsRectItem(trans);
+    inRect->setRect(QRectF(-640, -82, 1280, 60));
+    inRect->setBrush(QColor(0,0,0));
+    label = new QGraphicsTextItem(trans);
+    label->setPos(-370, -122);
+    label->setDefaultTextColor(QColor(255, 215, 0));
+    label->setPlainText(winner + " wins!");
+    auto font = new QFont();
+    font->setPixelSize(100);
+    font->setBold(true);
+    label->setFont(*font);
+    auto hint = new QGraphicsTextItem(trans);
+    hint->setPos(-224, 32);
+    hint->setDefaultTextColor(QColor(255, 255, 255));
+    hint->setPlainText("Press 'R' to restart a game");
+    auto hintfont = new QFont();
+    hintfont->setPixelSize(36);
+    hint->setFont(*hintfont);
 }
 
 void Mapmanager::victoryUI()

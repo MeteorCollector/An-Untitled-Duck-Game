@@ -23,6 +23,7 @@
 #include <QLabel>
 #include <QMovie>
 
+
 void playmusic(QMediaPlayer* player, QAudioOutput* audioOutput, float volume)
 {
     player->setSource(QUrl::fromLocalFile(":/pr/audios/bgm_sor.mp3"));
@@ -36,19 +37,25 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
 
     if(index == 0)// title scene
     {
+        //gameScene->clear();
         gameScene->clearAll();
+
+
         auto Manager = new TitleManager();
         auto mng = new GameObject();
         Manager->gms = gameScene;
         Manager->mainWD = this;
-
-
 
         auto trans = new Transform();
         trans->setPos(700, 400);// centered!
         mng->addComponent(trans);
         mng->addComponent(Manager);
         gameScene->attachGameObject(mng);
+
+        //GameObject* ptr = gameScene->getGameObject("mng");
+        //if (ptr != nullptr) gameScene->detachGameObject(ptr);// 唯一性
+
+        mng->setObjectName("mng");
 
         GameObject* duck[12];
         for(int j = 0;j < 12;j++)
@@ -65,7 +72,7 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
         /* button */
         auto PVPbutton = new GameObject();
         auto btn = new Button();
-        btn->index = 1; btn->mainWD = this; btn->gms = gameScene; btn->tmg = mng->getComponent<TitleManager>(); btn->str = " PVP 模式  ";
+        btn->index = 2; btn->mainWD = this; btn->gms = gameScene; btn->tmg = mng->getComponent<TitleManager>(); btn->str = " PVP 模式  ";
         auto bttrans = new Transform(QPointF(700, 470));
         PVPbutton->addComponent(bttrans);
         PVPbutton->addComponent(btn);
@@ -81,7 +88,7 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
 
         auto Tbutton = new GameObject();
         auto Tbtn = new Button();
-        Tbtn->index = 1; Tbtn->mainWD = this; Tbtn->gms = gameScene; Tbtn->tmg = mng->getComponent<TitleManager>(); Tbtn->str = "     教程  ";
+        Tbtn->index = 0; Tbtn->mainWD = this; Tbtn->gms = gameScene; Tbtn->tmg = mng->getComponent<TitleManager>(); Tbtn->str = "     教程  ";
         auto Tbttrans = new Transform(QPointF(400, 470));
         Tbutton->addComponent(Tbttrans);
         Tbutton->addComponent(Tbtn);
@@ -97,15 +104,17 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
 
     }
 
-    if(index == 1)// game
+    else if(index == 1 || index == 2)// game, index 1 - PVE, index 2 - PVP;
     {
         gameScene->clearAll();
+
         auto Manager = new Mapmanager();
     Manager->gms = gameScene;
     Manager->mainWD = this;
     auto mng = new GameObject();
+    if (index == 2) Manager->pvpEnabled = true;
 
-    GameObject* Player[2];
+    GameObject* Player[4];
     int spawnpoint[4][2];// 初始化玩家和机器人的生成地点
     const int width = 64, height = 48;
     int map[15][20] = { 0 };
@@ -141,6 +150,17 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
         for(int i = spawnpoint[t][1] - 1; i <= spawnpoint[t][1]; i++)
             for(int j = spawnpoint[t][0] - 1; j <= spawnpoint[t][0] + 1; j++)
                 map[i][j] = 0;
+
+    if(index == 1)// 如果有机器人，那么机器人周围也不应该有障碍物
+    {
+        spawnpoint[2][0] = 2, spawnpoint[2][1] = 1;
+        spawnpoint[3][0] = 17, spawnpoint[3][1] = 1;
+
+        for(int t = 2; t <= 3; t++)
+            for(int i = spawnpoint[t][1]; i <= spawnpoint[t][1] + 1; i++)
+                for(int j = spawnpoint[t][0] - 1; j <= spawnpoint[t][0] + 1; j++)
+                    map[i][j] = 0;
+    }
 
 
     for(int i = 0;i < 15;i++)// 铺地板
@@ -224,6 +244,42 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
     Player[1]->addComponent(controller2);
     gameScene->attachGameObject(Player[1]);
 
+    /* enemy */
+
+    if(index == 1)// 机器人
+    {
+        auto trans = new Transform;
+        Player[2] = new GameObject();
+        ImageTransformBuilder()
+              .setPos(QPointF(64 * spawnpoint[2][0] + 92, 48 * spawnpoint[2][1] + 48))
+              .setImage(":/robot/images/rbt_d_3.png")
+              .setAlignment(Qt::AlignCenter)
+              .addToGameObject(Player[2]);
+        trans->setPos(64 * spawnpoint[2][0] + 92, 48 * spawnpoint[2][1] + 48);
+        auto controller3 = new UserController();
+        controller3->playerID = 2;
+        controller3->map = Manager;
+        Player[2]->addComponent(trans);
+        Player[2]->addComponent(new Physics());
+        Player[2]->addComponent(controller3);
+        gameScene->attachGameObject(Player[2]);
+
+        Player[3] = new GameObject();
+        ImageTransformBuilder()
+              .setPos(QPointF(64 * spawnpoint[3][0] + 92, 48 * spawnpoint[3][1] + 48))
+              .setImage(":/robot/images/rbt_d_3.png")
+              .setAlignment(Qt::AlignCenter)
+              .addToGameObject(Player[3]);
+        trans->setPos(64 * spawnpoint[3][0] + 92, 48 * spawnpoint[3][1] + 48);
+        auto controller4 = new UserController();
+        controller4->playerID = 3;
+        controller4->map = Manager;
+        Player[3]->addComponent(trans);
+        Player[3]->addComponent(new Physics());
+        Player[3]->addComponent(controller4);
+        gameScene->attachGameObject(Player[3]);
+    }
+
     /* button */
     auto Bbutton = new GameObject();
     auto btnB = new Button();
@@ -236,6 +292,11 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
     /* hooking */
     Manager->player1 = Player[0];
     Manager->player2 = Player[1];
+    if (index == 1)
+    {
+        Manager->robot1 = Player[2];
+        Manager->robot2 = Player[3];
+    }
 
     auto trans = new Transform();
     trans->setPos(700, 400);// centered!
@@ -243,6 +304,10 @@ void MainWindow::loadScene(GameScene *gameScene, int index) {
     mng->addComponent(Manager);
     gameScene->attachGameObject(mng);
 
+    //GameObject* ptr = gameScene->getGameObject("mng");
+    //if (ptr != nullptr) gameScene->detachGameObject(ptr);// 唯一性
+
+    mng->setObjectName("mng");
     }
 }
 
