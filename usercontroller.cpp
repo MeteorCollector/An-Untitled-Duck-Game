@@ -121,23 +121,23 @@ void UserController::die()
     {
         auto r1 = map->robot1->getComponent<UserController>();
         auto r2 = map->robot2->getComponent<UserController>();
-        if(!r1->isAlive && !r2->isAlive)
+        if(!r1->isAlive && !r2->isAlive && (p1->isAlive || p2->isAlive))
         {
             map->mplr->stop();
             return map->victoryUI();
         }
+        if(!p1->isAlive && !p2->isAlive && (r1->isAlive || r2->isAlive))
+        {
+            map->mplr->stop();
+            return map->deathUI();
+        }
     }
-    if(!p1->isAlive && !p2->isAlive && (!map->pvpEnabled))
-    {
-        map->mplr->stop();
-        return map->deathUI();
-    }
-    if(p1->isAlive && !p2->isAlive)
+    if(p1->isAlive && !p2->isAlive && (map->pvpEnabled))
     {
         map->mplr->stop();
         return map->pvpEndUI("Player 1");
     }
-    if(!p1->isAlive && p2->isAlive)
+    if(!p1->isAlive && p2->isAlive && (map->pvpEnabled))
     {
         map->mplr->stop();
         return map->pvpEndUI("Player 2");
@@ -147,7 +147,8 @@ void UserController::die()
 void UserController::onUpdate(float deltaTime) {
 
     myTimer += deltaTime;
-    if(!isAlive){ return; }
+    calmTime -= deltaTime;
+    if (!isAlive) { return; }
 
     float vx = 0, vy = 0;
     int pace = 8;// 每pace步切换一次画面
@@ -209,10 +210,11 @@ void UserController::onUpdate(float deltaTime) {
     l_en = j > 0 && !((map->tile[i3][j3 - 1] > 0 || map->tile[i4][j4 - 1] > 0) && (x < 92 + 64 * j - 10));
     r_en = j < 19 && !((map->tile[i3][j3 + 1] > 0 || map->tile[i4][j4 + 1] > 0) && (x > 92 + 64 * j + 10));
 
-    //label->setPlainText("target y = " + QString::number(targety) + "  y = " + QString::number(y));//
+    label->setPlainText("i = " + QString::number(i) + "  j = " + QString::number(j));//
 
     if (playerID == 2 || playerID == 3)
     {
+        if (calmTime > 0) { myTimer = 0; moving = 0; }
         if (myTimer > loopTime)
         {
             myTimer = 0;
@@ -670,57 +672,87 @@ bool UserController::predict(int i, int j)
     int newi, newj;
     for (int k = 0; k < 5; k ++)
         if (1 <= j + dx[k] && j + dx[k] <= 20 && 1 <= i + dy[k] && i + dy[k] <= 15)
-            if (map->bmb[i + dy[k]][j + dx[k]] != nullptr) return false;
+            if (map->bmbdata[i + dy[k]][j + dx[k]] > 0) return false;
     for (int k = 1; k < 5; k ++)
         for (int d = 2; d <= 4; d ++)// 探测范围可以适量减少一些来减轻程序负担
         {
             newj = j + dx[k] * d; newi = i + dy[k] * d;
-            if (1 <= newj && newj <= 20 && 1 <= newi && newi <= 15 && map->bmb[newi][newj] != nullptr)
+            if (1 <= newj && newj <= 20 && 1 <= newi && newi <= 15)
             {
-                auto bmbcomp = map->bmb[newi][newj]->getComponent<Bomb>();
-                if (bmbcomp->level >= 4) return false;
+                if(map->bmbdata[newi][newj] >= 4) return false;
             }
         }
     //qDebug("robot: (%d,  %d) is free to go", i, j);
     return true;
 }
 
+float UserController::dto(int i, int j, int id)
+{
+    if(id == 1) return sqrt((i - pl1->i)*(i - pl1->i) + (j - pl1->j)*(j - pl1->j));
+    if(id == 2) return sqrt((i - pl2->i)*(i - pl2->i) + (j - pl2->j)*(j - pl2->j));
+    return 0;
+}
+
 void UserController::setMove(bool emergency)
 {
+    if (calmTime > 0) { moving = 0; return; }
     //qDebug("robot setMove");
     float minDistance = 1145141919810.0f;// 在保证安全的前提下向玩家靠近
     float distance;
     int k = 0;
     if (!predict(i, j)) emergency = true;
+    else if (escaping) { calmTime = 3.2; escaping  = false; }
     if (emergency)// 紧急情况：慌不择路
     {
-        qDebug("emergency!");//
+        if (predict(i, j)) { calmTime = 2.5; return; }// 假如已经安全，等待一会儿，否则它会着急走进炸弹光束里
+        //qDebug("emergency!");//
         k = rand() % 4 + 1;
-        while(map->tile[i + dy[k]][j + dx[k]] > 0) { k ++; k %= 5; }
+        int initk = k;
+        while(map->tile[i + dy[k]][j + dx[k]] > 0  || map->bmb[i + dy[k]][j + dx[k]] != nullptr)// 尽量不走炸弹
+        {
+            k ++; k %= 5;
+            if (k == initk) break;
+        }
+        k = rand() % 4 + 1;
+        initk = k;
+        while(map->tile[i + dy[k]][j + dx[k]] > 0)// 没办法了，只能顶着炸弹冲
+        {
+            k ++; k %= 5;
+            if (k == initk) { k = 0; break; }
+        }
         int newi = i + dy[k], newj = j + dx[k];
         targetx = 64 * (newj) + 92;
         targety = 48 * (newi) + 64 - 12;
         moving = k;
-        return;
+        escaping = true;
+        //return setMove(true);
     }
     if (predict(i - 1, j))
     {
-        distance = std::min(sqrt(float((i - 1 - pl1->i)*(i - 1 - pl1->i)) + float((j - pl1->j)*(j - pl1->j))), sqrt(float((i - 1 - pl2->i)*(i - 1 - pl2->i)) + float((j - pl2->j)*(j - pl2->j))));
+        if (pl1->isAlive && pl2->isAlive) distance = std::min(dto(i - 1, j, 1), dto(i - 1, j, 2));
+        else if (!pl1->isAlive) distance = dto(i - 1, j, 2);
+        else distance = dto(i - 1, j, 1);
         if (distance < minDistance) { minDistance = distance; k = 1; }
     }
     if (predict(i + 1, j))
     {
-        distance = std::min(sqrt(float((i + 1 - pl1->i)*(i + 1 - pl1->i)) + float((j - pl1->j)*(j - pl1->j))), sqrt(float((i - 1 - pl2->i)*(i - 1 - pl2->i)) + float((j - pl2->j)*(j - pl2->j))));
+        if (pl1->isAlive && pl2->isAlive) distance = std::min(dto(i + 1, j, 1), dto(i + 1, j, 2));
+        else if (!pl1->isAlive) distance = dto(i + 1, j, 2);
+        else distance = dto(i + 1, j, 1);
         if (distance < minDistance) { minDistance = distance; k = 2; }
     }
     if (predict(i, j - 1))
     {
-        distance = std::min(sqrt(float((i - pl1->i)*(i - pl1->i)) + float((j - 1 - pl1->j)*(j - 1 - pl1->j))), sqrt(float((i - 1 - pl2->i)*(i - 1 - pl2->i)) + float((j - pl2->j)*(j - pl2->j))));
+        if (pl1->isAlive && pl2->isAlive) distance = std::min(dto(i, j - 1, 1), dto(i, j - 1, 2));
+        else if (!pl1->isAlive) distance = dto(i, j - 1, 2);
+        else distance = dto(i, j - 1, 1);
         if (distance < minDistance) { minDistance = distance; k = 3; }
     }
     if (predict(i, j + 1))
     {
-        distance = std::min(sqrt(float((i - pl1->i)*(i - pl1->i)) + float((j + 1 - pl1->j)*(j + 1 - pl1->j))), sqrt(float((i - 1 - pl2->i)*(i - 1 - pl2->i)) + float((j - pl2->j)*(j - pl2->j))));
+        if (pl1->isAlive && pl2->isAlive) distance = std::min(dto(i, j + 1, 1), dto(i, j + 1, 2));
+        else if (!pl1->isAlive) distance = dto(i, j + 1, 2);
+        else distance = dto(i, j + 1, 1);
         if (distance < minDistance) { minDistance = distance; k = 4; }
     }
     int newi = i + dy[k], newj = j + dx[k];

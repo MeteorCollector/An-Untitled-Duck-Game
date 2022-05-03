@@ -12,6 +12,7 @@ void Bomb::onAttach()
     assert(trans != nullptr);
     imgtrans->setImage(":/item/images/bomb_0.png");
     map->bombCnt[index] ++;
+    map->bmbdata[i][j] = level;
     effect = new QSoundEffect();
     effect->setSource(QUrl("qrc:/pr/audios/fuse.wav"));
     effect->setVolume(100.0f);
@@ -41,6 +42,7 @@ void Bomb::onUpdate(float deltaTime)
         map->putFlame(i, j, 0, level);
         map->bombCnt[index] --;
         map->bmb[i][j] = nullptr;
+        map->bmbdata[i][j] -= level;
         effect->stop();
         effect->setSource(QUrl("qrc:/pr/audios/explode1.wav"));
         effect->setVolume(100.0f);

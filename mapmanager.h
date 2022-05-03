@@ -18,6 +18,7 @@ public:
     MainWindow* mainWD = nullptr;
 
     int tile[15][20] = { 0 };
+    int bmbdata[15][20] = { 0 };
     GameObject* arr[15][20];
     GameObject* bmb[15][20];
 

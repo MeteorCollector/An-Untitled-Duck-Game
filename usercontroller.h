@@ -59,6 +59,10 @@ private:
     UserController *pl2 = nullptr;
     int targetx = 0, targety = 0;
     float loopTime = 4;
+    float calmTime = 1;
+    bool escaping = false;
+
+    float dto(int i, int j, int id);
 };
 
 #endif // USERCONTROLLER_H
