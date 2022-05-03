@@ -13,6 +13,7 @@ void Button::onAttach(){
     trans = this->gameObject->getComponent<Transform>();
     assert(trans != nullptr);
     //imgtrans = this->gameObject->getComponent<ImageTransform>();
+    if (index == -2) str = "  暂停游戏";
     generate(index);
     trans->setFiltersChildEvents(true);
 }
@@ -37,26 +38,36 @@ void Button::generate(int index)
 
 void Button::onClick(QGraphicsSceneMouseEvent *ev)
 {
-    if(!enabled) return;
-    enabled = false;
+    if(index != -2)// pause
+    {
+        if(!enabled) return;
+        enabled = false;
+    }
+    else pause = !pause;
 
     if(index == -1)
-    {
         if (!(QMessageBox::information(NULL, tr("退出确认"), tr("真的要退出游戏吗 (T ^ T  )"), tr("果断退出"), tr("再玩一会儿"))))
         {
               QApplication* app;
               app->exit(0);
         }
+    if (index == -2)
+    {
+        str = pause ? "  继续游戏" : "  暂停游戏";
+        if (map != nullptr) pause ? map->showPauseUI() : map->hidePauseUI();
+        tag->setPlainText(str);
+        gms->pauseResumeCtrl(pause);
     }
     else
     {
-        if(tmg != nullptr) tmg->mplr->stop();
-        if(map != nullptr) map->mplr->stop();
+        if (tmg != nullptr) tmg->mplr->stop();
+        if (map != nullptr) map->mplr->stop();
         //gms->clearAll();
         //qDebug("new scene loaded by button", 1);
-        if(index == 2) return mainWD->loadScene(gms, 2);
-        if(index == 1) return mainWD->loadScene(gms, 1);
-        if(index == 0) return mainWD->loadScene(gms, 0);
+        if (index == 3) return mainWD->loadScene(gms, 3);
+        if (index == 2) return mainWD->loadScene(gms, 2);
+        if (index == 1) return mainWD->loadScene(gms, 1);
+        if (index == 0) return mainWD->loadScene(gms, 0);
     }
 
 }

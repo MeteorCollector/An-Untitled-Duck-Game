@@ -22,6 +22,7 @@ class GameScene final : public QGraphicsScene {
   void detachGameObject(GameObject *gameObject);
   GameObject *getGameObject(const char *name);
 
+  void pauseResumeCtrl(bool pause);// pause
   void clearAll();// add
 
  private:

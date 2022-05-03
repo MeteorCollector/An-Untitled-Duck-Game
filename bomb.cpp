@@ -39,7 +39,7 @@ void Bomb::onUpdate(float deltaTime)
     countdown -= deltaTime;
     int(countdown * 4) % 2 ? imgtrans->setImage(":/item/images/bomb_1.png") : imgtrans->setImage(":/item/images/bomb_0.png");
     if (countdown < 0) {
-        map->putFlame(i, j, 0, level);
+        map->putFlame(i, j, 0, level, index);
         map->bombCnt[index] --;
         map->bmb[i][j] = nullptr;
         map->bmbdata[i][j] -= level;

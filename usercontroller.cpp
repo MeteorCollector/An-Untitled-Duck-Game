@@ -54,23 +54,26 @@ void UserController::onAttach() {
     if(playerID == 0)
     {
         label->setDefaultTextColor(QColor(0, 255, 0));
-        label->setPlainText("Player 1");
+        playerName = "Player 1";
     }
     else if(playerID == 1)
     {
         label->setDefaultTextColor(QColor(0, 0, 255));
-        label->setPlainText("Player 2");
+        playerName = "Player 2";
     }
     else if(playerID == 2)
     {
         label->setDefaultTextColor(QColor(255, 0, 0));
-        label->setPlainText("Robot  1");
+        playerName = "Robot  1";
     }
     else if(playerID == 3)
     {
         label->setDefaultTextColor(QColor(255, 0, 0));
-        label->setPlainText("Robot  2");
+        playerName = "Robot  2";
     }
+    label->setPlainText(playerName);
+    labelUpdate();
+
     auto font = new QFont();
     font->setPixelSize(20);
     font->setBold(true);
@@ -124,24 +127,29 @@ void UserController::die()
         if(!r1->isAlive && !r2->isAlive && (p1->isAlive || p2->isAlive))
         {
             map->mplr->stop();
-            return map->victoryUI();
+            return map->victoryUI(p1->score + p2->score);
         }
         if(!p1->isAlive && !p2->isAlive && (r1->isAlive || r2->isAlive))
         {
             map->mplr->stop();
-            return map->deathUI();
+            return map->deathUI(p1->score + p2->score);
         }
     }
     if(p1->isAlive && !p2->isAlive && (map->pvpEnabled))
     {
         map->mplr->stop();
-        return map->pvpEndUI("Player 1");
+        return map->pvpEndUI("Player 1", p1->score);
     }
     if(!p1->isAlive && p2->isAlive && (map->pvpEnabled))
     {
         map->mplr->stop();
-        return map->pvpEndUI("Player 2");
+        return map->pvpEndUI("Player 2", p2->score);
     }
+}
+
+void UserController::labelUpdate()
+{
+    label->setPlainText(playerName + " score = " + QString::number(score));//
 }
 
 void UserController::onUpdate(float deltaTime) {
@@ -186,6 +194,8 @@ void UserController::onUpdate(float deltaTime) {
         auto grd = map->arr[i][j]->getComponent<Grid>();
         int index = - map->tile[i][j];
         if(index >= 1){
+            score += 100;
+            labelUpdate();
             effect->stop(); effect->setSource(QUrl("qrc:/pr/audios/levelup.wav")); effect->play();
             bstr[2] = bstr[1]; bstr[1] = bstr[0];
         }
@@ -209,8 +219,6 @@ void UserController::onUpdate(float deltaTime) {
     d_en = i < 14 && !((map->tile[i1 + 1][j1] > 0 || map->tile[i2 + 1][j2] > 0) && (y > 64 + 48 * i - 18));
     l_en = j > 0 && !((map->tile[i3][j3 - 1] > 0 || map->tile[i4][j4 - 1] > 0) && (x < 92 + 64 * j - 10));
     r_en = j < 19 && !((map->tile[i3][j3 + 1] > 0 || map->tile[i4][j4 + 1] > 0) && (x > 92 + 64 * j + 10));
-
-    label->setPlainText("i = " + QString::number(i) + "  j = " + QString::number(j));//
 
     if (playerID == 2 || playerID == 3)
     {

@@ -26,12 +26,17 @@ public:
     bool predict(int i, int j);
     void harm(int damage);
     void die();
+    void labelUpdate();
+
     //GameObject *label = nullptr;
 
+    QString playerName = "Okita_Souji";
     int i, j;
+    int score = 0;
 
 private:
     void say(QString str);
+    float dto(int i, int j, int id);
 
     std::queue<int> buff;
     int buffcount[4] = { 0 };
@@ -61,8 +66,6 @@ private:
     float loopTime = 4;
     float calmTime = 1;
     bool escaping = false;
-
-    float dto(int i, int j, int id);
 };
 
 #endif // USERCONTROLLER_H

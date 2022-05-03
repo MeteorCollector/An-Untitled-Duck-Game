@@ -53,6 +53,12 @@ void GameScene::clearAll()
     //gameObjectsToDetach.clear();
 }
 
+void GameScene::pauseResumeCtrl(bool pause)
+{
+    if (pause) return updateTimer->stop();
+    else return updateTimer->start();
+}
+
 void GameScene::attachGameObject(GameObject *gameObject) {
   gameObjectsToAttach.emplace_back(gameObject);
 }
