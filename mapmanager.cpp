@@ -45,7 +45,7 @@ void Mapmanager::onUpdate(float deltaTime)
         //gms->clearAll();
         exitingEnabled = false;
         qDebug("new scene loaded by R key", 1);
-        if (pvpEnabled) return mainWD->loadScene(gms, 2);
+        if (pvpEnabled && !isTutorial) return mainWD->loadScene(gms, 2);
         if (isTutorial) return mainWD->loadScene(gms, 3);
         else return mainWD->loadScene(gms, 1);
     }
@@ -232,6 +232,10 @@ void Mapmanager::deathUI(int score)
 
 void Mapmanager::showPauseUI()
 {
+    Panel = new QGraphicsRectItem(trans);
+    Panel->setBrush(QColor(0, 0, 0, 200));
+    //Panel->setPen(QColor(0, 0, 0));
+    Panel->setRect(-640, -256, 1280, 512);
     lRect = new QGraphicsRectItem(trans);
     lRect->setBrush(QColor(255, 255, 255));
     lRect->setPen(QColor(0, 0, 0));
@@ -239,11 +243,13 @@ void Mapmanager::showPauseUI()
     rRect = new QGraphicsRectItem(trans);
     rRect->setBrush(QColor(255, 255, 255));
     rRect->setPen(QColor(0, 0, 0));
-    rRect->setRect(QRectF(60, -180, 60, 360));
+    rRect->setRect(QRectF(60, -180, 60, 360));  
 }
 
 void Mapmanager::hidePauseUI()
 {
+    Panel->setBrush(QColor(255, 255, 255, 0));
+    Panel->setPen(QColor(255, 255, 255, 0));
     lRect->setBrush(QColor(255, 255, 255, 0));
     lRect->setPen(QColor(255, 255, 255, 0));
     rRect->setBrush(QColor(255, 255, 255, 0));

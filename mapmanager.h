@@ -56,6 +56,7 @@ private:
     QGraphicsRectItem *Rect = nullptr;
     QGraphicsRectItem *lRect = nullptr;
     QGraphicsRectItem *rRect = nullptr;
+    QGraphicsRectItem *Panel = nullptr;
     Transform *trans = nullptr;
 };
 #endif // MAPMANAGER_H

@@ -682,7 +682,7 @@ bool UserController::predict(int i, int j)
         if (1 <= j + dx[k] && j + dx[k] <= 20 && 1 <= i + dy[k] && i + dy[k] <= 15)
             if (map->bmbdata[i + dy[k]][j + dx[k]] > 0) return false;
     for (int k = 1; k < 5; k ++)
-        for (int d = 2; d <= 4; d ++)// 探测范围可以适量减少一些来减轻程序负担
+        for (int d = 2; d <= 5; d ++)// 探测范围可以适量减少一些来减轻程序负担
         {
             newj = j + dx[k] * d; newi = i + dy[k] * d;
             if (1 <= newj && newj <= 20 && 1 <= newi && newi <= 15)
