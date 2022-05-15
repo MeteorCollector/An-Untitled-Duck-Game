@@ -15,7 +15,6 @@
         <file>audios/fgo_battle_finish.mp3</file>
         <file>audios/Song_for_Denise.mp3</file>
         <file>audios/Toby_Fox_Determination.mp3</file>
-        <file>dancing.gif</file>
     </qresource>
     <qresource prefix="/sprites">
         <file>images/b_1.gif</file>

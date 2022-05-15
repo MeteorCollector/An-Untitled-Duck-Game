@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(QtGameFramework VERSION 0.1 LANGUAGES CXX)
+project(UntitledDuckGame VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -30,15 +30,10 @@ set(PROJECT_SOURCES
 
         physics.h physics.cpp
         usercontroller.h usercontroller.cpp
-        ammo.h ammo.cpp
-        health.h health.cpp
-        hitable.h hitable.cpp
-        shooter.h shooter.cpp
         bomb.h bomb.cpp
         flame.h flame.cpp
         stuff.h stuff.cpp
         grid.h grid.cpp
-        summondummy.h summondummy.cpp
         mapmanager.h mapmanager.cpp
         scenemanager.h scenemanager.cpp
         messagebox.h messagebox.cpp
