@@ -35,7 +35,6 @@ set(PROJECT_SOURCES
         stuff.h stuff.cpp
         grid.h grid.cpp
         mapmanager.h mapmanager.cpp
-        scenemanager.h scenemanager.cpp
         messagebox.h messagebox.cpp
         button.h button.cpp
         titlemanager.h titlemanager.cpp

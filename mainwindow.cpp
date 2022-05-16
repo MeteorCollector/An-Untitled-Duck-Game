@@ -2,8 +2,6 @@
 
 #include <gameobject.h>
 #include <imagetransform.h>
-#include <shooter.h>
-#include <summondummy.h>
 #include <transformbuilder.h>
 #include <physics.h>
 #include <usercontroller.h>
